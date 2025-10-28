@@ -1,5 +1,0 @@
-"0","# check for model assumption"
-"0",""
-"0","par(mfrow = c(2, 2))  # 2x2 grid of plots"
-"0","plot(lm_1)"
-"0",""

@@ -1,3 +1,0 @@
-"0",""
-"0","# Outlier check"
-"0","boxplot(dataset$Precip, main=""Precipitation Outliers"")"

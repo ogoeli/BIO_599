@@ -1,3 +1,0 @@
-"0",""
-"0","#scatter plot of response variable (water potential) and one of the explanatory variables (LT)"
-"0","plot(x = dataset$LT, y = dataset$Water_Potential, main = ""scatter plot"")"

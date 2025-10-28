@@ -1,3 +1,0 @@
-"0",""
-"0","#Do we have homogeneity of variance?"
-"0","boxplot(Water_Potential ~ Plot:Species, data = dataset)"

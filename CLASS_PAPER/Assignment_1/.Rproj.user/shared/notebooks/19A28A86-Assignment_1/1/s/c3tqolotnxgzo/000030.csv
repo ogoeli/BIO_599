@@ -1,3 +1,0 @@
-"0",""
-"0","#Are there lots of zeros in the data?"
-"0","hist(dataset$Water_Potential, main = ""Zero-inflated Poisson Distribution"", xlab = ""Counts"")"
