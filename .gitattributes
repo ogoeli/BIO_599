@@ -1,0 +1,2 @@
+CLASS_PAPER/CODE/FIG_1/DATA/GEE_CHM/CHM.tif filter=lfs diff=lfs merge=lfs -text
+WEEK_9/ecoML-main/Lab/Data/birdArchive.zip filter=lfs diff=lfs merge=lfs -text
