@@ -1,0 +1,3 @@
+"0","data_3$treatment <- factor(data_3$treatment, levels = c(""no females added"",""1 virgin female"","
+"0","""1 pregnant female"",""8 virgin females"",""8 pregnant females""))"
+"0",""

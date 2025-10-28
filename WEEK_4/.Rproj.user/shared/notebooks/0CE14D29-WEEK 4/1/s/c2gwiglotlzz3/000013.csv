@@ -1,0 +1,3 @@
+"0",""
+"0","    g_noTA <- update(g_no3way, . ~ . - Treatment:Abundance_f)"
+"0","    anova(g_no3way, g_noTA)"

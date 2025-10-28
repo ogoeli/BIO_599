@@ -1,0 +1,2 @@
+"0","target<-""NEE"" # Could be multiple targets"
+"0","predictors<-c(""SW_IN"",""VPD"",""TA"",""SWC"")"

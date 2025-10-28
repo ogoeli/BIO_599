@@ -1,0 +1,3 @@
+"0","#Are observations of the response variable independent?"
+"0","#Check for autocorrelation in residuals if data are time-ordered"
+"0","acf(dataset$Water_Potential, main = ""ACF of Model Residuals"")"

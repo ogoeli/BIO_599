@@ -1,0 +1,1 @@
+"0","    boxplot(m1$residuals ~ m1$model$species)"

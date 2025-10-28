@@ -1,0 +1,7 @@
+"0",""
+"0","    # Levene's test (from car package)"
+"0","    library(car)"
+"0","    vif(flux ~ ecosystem.type, data = data)"
+"2","Error in UseMethod(""vcov"") : 
+  no applicable method for 'vcov' applied to an object of class ""formula""
+"

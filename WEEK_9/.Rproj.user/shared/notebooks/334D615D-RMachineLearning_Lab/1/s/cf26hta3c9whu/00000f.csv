@@ -1,0 +1,3 @@
+"0","model <- train(NEE~.,data=training,method=""rpart"","
+"0","                      parms = list(split = ""ginni"")) # ginni can be replaced by chisquare, entropy, information"
+"0","fancyRpartPlot(model$finalModel)"

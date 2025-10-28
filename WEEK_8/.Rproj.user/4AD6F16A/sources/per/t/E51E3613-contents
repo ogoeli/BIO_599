@@ -1,0 +1,317 @@
+---
+title: "WEEK 8"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+### **Exercise 1: Irish forest data**
+
+# The data used are a subset of the data analysed in Cruikshanks et al. (2006), a technical report by the Environmental Protection Agency, Wexford, Ireland. We only use the 2003 data, and several recordings were dropped. The original research sampled 257 rivers in Ireland during 2002 and 2003. One aim was to find a different tool for identifying acid-sensitive waters, which currently uses measures of pH. The Sodium Dominance Index (SDI) was proposed as an alternative. The motivation for this research is the increase in plantation forestry cover in Irish landscapes and its potential impacts on aquatic resources.
+
+1.  Load the packages
+
+    ```{r}
+    library(tidyverse)
+    library(nlme)
+    library(lme4)
+    library(sjPlot)
+    library(ggeffects)
+    ```
+
+2.  Read the data from `Irishforest.csv` and inspect the first few lines to ensure it was read correctly.
+
+3.  Pay careful attention to the following variables (pH is the response variable):
+
+    -   Sodium Dominance Index (SDI)
+
+    -   Status as forested or not
+
+    -   Altitude
+
+    ```{r}
+
+    data <- read.csv("Irishforest.csv")
+    str(data)
+    ```
+
+4.  Plot the data of pH and forested status in sampling space (Easting and Northing). Does there appear to be spatial correlation?
+
+    ```{r}
+    data$Forested <- factor(data$Forested)
+    ggplot(data, aes(x = Easting, y = Northing)) +
+      geom_point(aes(color = pH, shape = Forested), size = 3) +
+      #scale_color_gradient(low = "orange", high = "blue") +
+      theme_bw() +
+      labs(title = "PH Vs Forested at different locations")
+    ```
+
+5.  Fit a linear model with pH as a function of SDI, forested status, altitude, **all two-way interactions**, and the **three-way interaction**.
+
+    ```{r}
+    ph_gls <- gls(pH ~ SDI*Forested*Altitude, data = data, method = "ML")
+    tab_model(ph_gls, show.aic = TRUE, show.se = TRUE)
+    ```
+
+6.  Examine model assumptions using residual plots.
+
+    -   the residuals are centered along zero which might suggest the residuals are randomly distributed.
+
+    ```{r}
+    data$resid <- residuals(ph_gls, type = "normalized")
+    plot(data$resid)
+    plot(ph_gls)
+
+    ```
+
+7.  Extract and plot the residuals spatially (colored by residual value). Are the residuals spatially correlated?
+
+    -   there is a clear pattern in the figure which shows some sort of spatial correlation
+
+    ```{r}
+    ggplot(data, aes(x = Easting, y = Northing, color = resid, size = abs(resid))) +
+      geom_point() +
+      scale_color_gradient2() +
+      theme_bw()
+
+    ```
+
+8.  Plot a variogram to assess spatial correlation.
+
+    -   the variogram also suggests some sort of spatial correlation.
+
+    ```{r}
+    #The nlme package includes a built-in Variogram() function to plot these.
+    vario_bor <- Variogram(ph_gls, form = ~ Easting + Northing, resType = "normalized")
+    plot(vario_bor)
+    ```
+
+9.  Add **at least two different spatial correlation structures** to the model.
+
+    ```{r}
+    #Exponential type of spatial correlation
+    ph_exp <- update(ph_gls,
+                      correlation = corExp(form = ~ Easting + Northing, nugget = TRUE))
+
+    #Gaussian
+
+    ph_gaus <- update(ph_gls,
+                       correlation = corGaus(form = ~ Easting + Northing, nugget = TRUE))
+    #Linear
+
+    ph_lin <- update(ph_gls,
+                    correlation = corLin(form = ~ Easting + Northing, nugget = TRUE))
+    #Ratio
+
+    ph_ratio <- update(ph_gls,
+                        correlation = corRatio(form = ~ Easting + Northing, nugget = TRUE))
+    #Spherical
+
+    ph_spher <- update(ph_gls,
+                        correlation = corSpher(form = ~ Easting + Northing, nugget = TRUE))
+    ```
+
+10. Compare models with different spatial correlation structures using AIC. Make a table of AIC values.
+
+    -   the ratio model is the best performing model based on the lower AIC score
+
+    ```{r}
+    AIC(ph_gls, ph_exp, ph_gaus, ph_ratio, ph_spher, ph_lin)
+    ```
+
+11. Plot a variogram of the best model. Is the spatial correlation accounted for?
+
+    -   the the spatial correlation is not fully accounted for.
+
+    ```{r}
+    vario_best <- Variogram(ph_ratio, form = ~ Easting+ Northing, resType = "normalized")
+    plot(vario_best)
+    ```
+
+12. If not, describe your next steps.
+
+    -   since the spatial correlation isn't fully accounted for, I would explore other options like adding some sort of variance to the model and exploring other form of correlation not accounted for by the spatial correlation.
+
+### **Exercise #2: Plankton / Cod dataset**
+
+# Data from: Freitas, C., E. M. Olsen, H. Knutsen, J. Albretsen, and E. Moland. 2016. Temperature-associated habitat selection in a cold-water marine fish. *Journal of Animal Ecology* 85:628–637.
+
+The authors examined the effect of ocean temperature on dive depth of individually tagged Atlantic cod along the Norwegian coast.
+
+1.  Read the data from `Cod_Daily_Depth.csv` and inspect the first few lines to ensure it was read correctly.
+
+2.  Examine the structure of the dataset.
+
+    ```{r}
+    data_2 <- read.csv("Cod_daily_depth_data.csv")
+    str(data_2)
+    ```
+
+3.  Change the date column from `day/month/year` to `year-month-day` format using the `lubridate` package.
+
+    ```{r}
+    data_2$date <- dmy(data_2$date)
+    ```
+
+4.  Plot log-transformed dive depth as a function of temperature for each fish. Why log-transform depth here?
+
+    -   it applies transformation to the variable and it also helps brings the data close to normal.
+
+    ```{r}
+    data_2$log_depth_mean_day <- log(data_2$depth_mean_day)
+    ggplot(data_2, aes(x = log_depth_mean_day, y = Temperature_1m, color = fish)) +
+      geom_point() +
+      geom_line() +
+      theme_bw() +
+      labs(title = "Fish abundance by depth and Temperature")
+    ```
+
+5.  Center the temperature predictor to reduce correlation between intercepts and slopes.
+
+    ```{r}
+    data_2$Temperature_z <- scale(data_2$Temperature_1m)
+
+    ```
+
+6.  Fit a mixed-effects model predicting dive depth from centered surface temperature with:
+
+    -   Random intercept for `fish`
+
+    -   Random slope for `temperature_centered` grouped by `fish`
+
+    -   Use `nlme::lme` (not `lme4`) so that we can model residual correlation.
+
+    ```{r}
+
+    m1 <- lme(fixed = log_depth_mean_day ~ Temperature_z,
+              data  = data_2,
+              random = ~ 1 | fish,
+              method = "REML",
+              na.action = na.omit)    # REML preferred for random effects estimation
+    summary(m1)
+
+
+
+    m2 <- lme(fixed = log_depth_mean_day ~ Temperature_z,
+              data  = data_2,
+              random = ~ Temperature_z | fish,
+              method = "REML",
+              na.action = na.omit)    # REML preferred for random effects estimation
+    summary(m2)
+
+    ```
+
+7.  Examine the model fit. Plot fitted relationships for each fish.
+
+    -   the error isn't normally distributed.
+
+    ```{r}
+    # Random effects
+    ranef(m1)    # BLUPs: fish-specific intercepts and slopes
+
+    # Variance-covariance of random effects
+    VarCorr(m1)
+
+    # Residual diagnostics
+    plot(m1)   # residuals vs fitted
+    qqnorm(residuals(m1, type = "normalized")); qqline(residuals(m1, type = "normalized"))
+
+    ```
+
+8.  Plot residuals versus fitted values for each fish.
+
+    -   its still not normal.
+
+    ```{r}
+
+    # Extract the rows actually used in the model
+    data_used <- data_2[!is.na(data_2$log_depth_mean_day) & !is.na(data_2$Temperature_z), ]
+
+    # Add fitted values and residuals
+    data_used$fitted <- fitted(m1)
+    data_used$residuals <- residuals(m1, type = "normalized")
+
+    ggplot(data_used, aes(x = fitted, y = residuals, color = fish)) +
+      geom_point(alpha = 0.6) +
+      geom_hline(yintercept = 0, linetype = "dashed") +
+      theme_bw() +
+      labs(
+        title = "Residuals vs Fitted Values by Fish",
+        x = "Fitted log(Dive Depth)",
+        y = "Normalized Residuals",
+        color = "Fish ID"
+      )
+
+    ```
+
+9.  Plot residuals versus date for each fish
+
+    ```{r}
+    ggplot(data_used, aes(x = date, y = residuals, color = fish)) +
+      geom_point(alpha = 0.6) +
+      geom_hline(yintercept = 0, linetype = "dashed") +
+      theme_bw() +
+      labs(
+        title = "Residuals vs Date by Fish",
+        x = "Date",
+        y = "Normalized Residuals",
+        color = "Fish ID"
+      )
+    ```
+
+10. Use the autocorrelation function (ACF) to examine correlation of residuals between days. How correlated are values one day apart?
+
+    -   shows the days are correlated.
+
+    ```{r}
+    acf(residuals(m1, type = "normalized"))
+    pacf(residuals(m1, type = "normalized"))
+    ```
+
+11. Add a temporal autocorrelation structure (`corAR1()`).
+
+    ```{r}
+    #AR(1) structure
+
+    fish_ar1 <- update(m1,
+                        correlation = corAR1(form = ~ date))
+    ```
+
+12. Examine the residuals versus fitted values and versus date again, using `type = "normalized"` residuals.
+
+    ```{r}
+    acf(residuals(fish_ar1, type = "normalized"))
+    pacf(residuals(fish_ar1 , type = "normalized"))
+    ```
+
+13. Plot the final fitted model.
+
+    -   Transform predictions from log(depth) back to depth for interpretation.
+
+    -   Use `ggpredict` for population-level predictions.
+
+    -   (**Bonus**) Plot a separate slope and intercept for each fish.
+
+    ```{r}
+
+    # Population-level predictions (fixed effects only)
+    pop_pred <- ggpredict(fish_ar1, terms = "Temperature_z")
+
+    # Back-transform from log(depth) to depth
+    pop_pred$predicted_depth <- exp(pop_pred$predicted)
+    pop_pred$conf.low_depth <- exp(pop_pred$conf.low)
+    pop_pred$conf.high_depth <- exp(pop_pred$conf.high)
+
+
+
+    ggplot(pop_pred, aes(x = x, y = predicted_depth)) +
+      geom_line(color = "blue", size = 1.2) +
+      geom_ribbon(aes(ymin = conf.low_depth, ymax = conf.high_depth), alpha = 0.2, fill = "blue") +
+      theme_bw() +
+      labs(
+        title = "Population-level predictions of Dive Depth vs Temperature (AR1 model)",
+        x = "Centered Temperature (°C)",
+        y = "Predicted Dive Depth (m)"
+      )
+
+    ```

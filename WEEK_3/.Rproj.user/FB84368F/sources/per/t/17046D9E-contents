@@ -1,0 +1,320 @@
+---
+title: "Week_3"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+```{r}
+#load your packages
+library(tidyverse)
+library(sjPlot)
+library(emmeans)
+library(visreg)
+
+```
+
+# Exercise 1
+
+```{r}
+data_1 <- read.csv("RIKZdat.csv")
+head(data_1)
+```
+
+##### **Create a scatter plot of the data. Choose the response and explanatory variables with care: we want to predict Richness from height of the sample above sea level.**
+
+```{r}
+##plot of x and y
+
+plot(data_1$NAP~data_1$Richness)
+```
+
+##### **Fit a linear model to the data with species richness (Richness) as the response variable and site height (NAP) as the predictor.**
+
+```{r}
+lm_1 <- lm( data_1$Richness ~ data_1$NAP)
+```
+
+##### **Add the best-fit line to the scatter plot. Does the relationship appear linear? From the scatter plot, visually check for any serious problems such as outliers or changes in the variance.**
+
+```{r}
+ggplot(data_1, aes(x = NAP, y = Richness)) +
+  geom_point(size = 2, color = "red") +
+  geom_smooth(method = "lm", color = "black") +
+  theme_bw()
+```
+
+##### **Using the same fitted model object, obtain the estimates for the coefficients, slope and intercept, standard errors, and 95% confidence intervals for the slope and intercept. What is the R2 value for the model fit? Hint: use tab_model function from the sjPlot package.**
+
+-   R squared = 0.325 and Adjusted R squared = 0.309
+
+```{r}
+tab_model(lm_1)
+```
+
+##### **Test the fit of the model to the data with an ANOVA table. What does this test tell us?**
+
+-   the model's slope is not equal to 0. and the model is significant with p value \< than 0.05 and the null hypothesis can be rejected.
+
+```{r}
+anova(lm_1)
+```
+
+##### **Recall the assumptions of linear models. Do the data conform to the assumptions? Are there any potential concerns? Most of the plots will be self-explanatory, except perhaps the last one. “Leverage” calculates the influence that each data point has on the estimated parameters. For example, if the slope changes a great deal when a point is removed, that point is said to have high leverage. “Cook’s distance” measures the effect of each data point on the predicted values for all the other data points. A value greater than 1 is said to be worrisome. Points with high leverage don’t necessarily have high Cook’s distance, and vice versa.**
+
+-   The first plot for residual vs fitted value plot. it shows that some points are nonlinear.
+
+-   The second plot looks at the QQ plot. it assess the normality of residuals. the residuals are normally distributed so all the points lays on the line with just few outliers.
+
+-   
+
+```{r}
+#par(mfrow = c(2, 2))
+plot(lm_1)
+```
+
+# **Exercise #2: One categorical variable**
+
+```{r}
+#read the data
+
+data_2 <- read.csv("knees.csv")
+head(data_2)
+```
+
+##### **Plot the phase shift data, showing the individual data points in each treatment group.**
+
+```{r}
+
+ggplot(data_2, aes(x = treatment, y = shift, fill = treatment)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  theme_bw()
+```
+
+##### **Determine whether the categorical variable “treatment” is a factor. If not a factor, convert treatment to a factor using the factor() command. This will be convenient when we fit the linear model.**
+
+```{r}
+levels(data_2$treatment)
+data_2$treatment <- as.factor(data_2$treatment)
+```
+
+##### **Use the levels() command on the factor variable “treatment” to see how R has ordered the different treatment groups. The order will be alphabetical, by default. Conveniently, you will find that the control group is listed first in the alphabetical sequence. (As you are about to analyze these data with a linear model in R, can you think of why having the control group first in the order is convenient?)**
+
+```{r}
+levels(data_2$treatment)
+```
+
+##### **To get practice, change the order of the levels so that the “knee” treatment group is second in the order, after “control”, and the “eyes” group is listed third.**
+
+```{r}
+data_2$treatment <- factor(data_2$treatment, levels = c("control", "knee", "eyes"))
+
+```
+
+##### **Plot the phase shift data again to see the result.**
+
+```{r}
+
+ggplot(data_2, aes(x = treatment, y = shift, fill = treatment)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  theme_bw()
+```
+
+##### **Fit a linear model to the light treatment data. Store the output in an lm() object.**
+
+```{r}
+lm_2 <- lm(shift ~ treatment, data = data_2)
+tab_model(lm_2)
+```
+
+##### **Create a graphic that illustrates the fit of the model to the data. In other words, include the predicted (fitted) values to your plot.**
+
+```{r}
+
+fit <- lm_2$fitted.values
+# Plot observed data
+plot(data_2$treatment, data_2$phase_shift,
+     main = "Observed vs Fitted Phase Shift",
+     xlab = "Treatment",
+     ylab = "Phase Shift",
+     pch = 16, col = "blue")
+
+# Add fitted values as red points (slightly offset for visibility)
+points(data_2$treatment, fit, col = "red", pch = 17)
+
+# Add a legend
+legend("topright", legend = c("Observed", "Fitted"),
+       col = c("blue", "red"), pch = c(16, 17))
+```
+
+##### **Check whether the assumptions of linear models are met in this case. Examine the plots. Are there.**
+
+-   plot one doesn't meet the assumption of colleniality.
+
+-   QQ plot shows normality of residuals.
+
+```{r}
+plot(lm_2)
+```
+
+##### **Using the lm() model object, obtain the parameter estimates (coefficients) along with standard errors. Examine the parameter estimates. If you’ve done the analysis correctly, you should see the three coefficients. Rounded, they are -0.309, -0.027, and -1.24. What do each of these coefficients represent – what is being estimated by each value? Note that the output will also include an R2 value. This is loosely interpretable as the “percent of the variance in phase shift that is explained by treatment.”**
+
+-   The intercept of -0.31 shows that at 0 increase in our control group, there is a -0.31 change in treatment.
+
+-   the slope of knee and eyes shows that for every 1 unit of change in the treatment, there is an expected shift of -0.03 and -1.24.
+
+##### **The P-values associated with the three coefficients are generally invalid. Why? Under what circumstance might one of the P-values be valid?**
+
+-   I think because one out of two treatment isn't significant?
+
+##### **Obtain 95% confidence intervals for the three parameters.**
+
+-   -0.83- 0.21
+
+-   -0.79 - 0.74
+
+-   -2.01 - -0.48
+
+##### **Test the effect of light treatment on phase shift with an ANOVA table.**
+
+```{r}
+anova(lm_2)
+```
+
+##### **Produce a table of the treatment means using the fitted model object, along with standard errors and confidence intervals. Hint: use the emmenas package. Now, calculate the means and SE’s separately on the data from each treatment group. When would you expect these values to be the same or different?**
+
+```{r}
+
+# Get estimated marginal means (EMMs)
+emmeans_lm <- emmeans(lm_2, ~ treatment)
+
+# Show means, standard errors, and 95% confidence intervals
+summary(emmeans_lm, infer = c(TRUE, TRUE))
+
+```
+
+## **Exercise #3: One categorical and one continuous variable**
+
+```{r}
+data_3 <- read.csv("fruitflies.csv")
+head(data_3)
+```
+
+##### **Determine whether the categorical variable “treatment” is a factor. If not a factor, convert treatment to a factor. This will be convenient when we fit the linear model.**
+
+```{r}
+levels(data_3$treatment)
+data_3$treatment <- as.factor(data_3$treatment)
+```
+
+##### **Use the levels() command on the factor variable “treatment” to see how R has ordered the different treatment groups (should be alphabetically).**
+
+```{r}
+levels(data_3$treatment)
+```
+
+##### **Change the order of the categories so that a sensible control group is first in the order of categories. Arrange the order of the remaining categories as you see fit.**
+
+```{r}
+data_3$treatment <- factor(data_3$treatment, levels = c("no females added","1 virgin female",
+"1 pregnant female","8 virgin females","8 pregnant females"))
+
+```
+
+##### **Create a scatter plot, with longevity as the response variable and body size (thorax length) as the explanatory variable. Use a single plot with different symbols (and colors too, if you like) for different treatment groups. Or make a multipanel plot using the ggplot2 package.**
+
+```{r}
+ggplot(data_3, aes(x = thorax.mm, y = longevity.days, 
+                   color = treatment, shape = treatment)) +
+  geom_point(size = 3, alpha = 0.8) +
+  labs(title = "Longevity vs Body Size by Treatment",
+       x = "Thorax Length",
+       y = "Longevity") +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set2")  # optional, nice color palette
+
+```
+
+##### **Fit a linear model to the fly data, including both body size (thorax length) and treatment as explanatory variables. Place thorax length before treatment in the model formula. Leave out the interaction term for now – we’ll assume for now that there is no interaction between the explanatory variables thorax and treatment.**
+
+```{r}
+lm_3 <- lm(longevity.days~thorax.mm+treatment, data = data_3)
+```
+
+##### **Check whether the assumptions of linear models are met in this case. Are there any potential concerns? If you have done the analysis correctly, you will see that the variance of the residuals is not constant, but increases with increasing fitted values. This violates the linear model assumption of equal variance of residuals.**
+
+-   QQ plot shows that the residual are normaly distributed but the other plots doesnt meet the model assumption.
+
+```{r}
+plot(lm_3)
+```
+
+##### **Attempt to fix the problem identified in step (2) using a log-transformation of the response variable. Refit the model and reapply the graphical diagnostic tools to check assumptions. Any improvements? (To my eye the situation is improved but the issue has not gone away entirely.) Let’s continue anyway with the log-transformed analysis.**
+
+-   The model improved after transforming the response variable.
+
+```{r}
+data_3$longevity.days <- log(data_3$longevity.days)
+
+lm_log <- lm(data_3$longevity.days~data_3$thorax.mm+data_3$treatment)
+plot(lm_log)
+```
+
+##### **Visualize the fit of the model to the data using the visreg or ggeffects package. Try two different possibilities. In the first, plot the fit of the response variable to thorax length separately for each treatment group. In the second, plot the fit of the data to treatment, conditioning on the value of the covariate (thorax length).**
+
+```{r}
+visreg(lm_3, "thorax.mm", by = "treatment")
+```
+
+##### **Obtain 95% confidence intervals for the treatment and slope parameters. Obtain the parameter estimates and standard errors for the fitted model. Interpret the parameter estimates. What do they represent\*? Which treatment group differs most from the control group?**
+
+-   The parameter estimates represent the **predicted change in longevity relative to the control group**, holding thorax length constant; the slope for `thorax.mm` shows how longevity increases with body size, and among treatments, the **“8 virgin females”** group differs most from the control, showing the largest and statistically significant decrease in longevity.
+
+```{r}
+confint(lm_3)
+
+```
+
+##### **Test overall treatment effects with an ANOVA table. Interpret each significance test – what exactly is being tested?**
+
+-   I understand that its testing just thorax and treatment but it doesnt take into account the different treatment group.
+
+-   Both thorax length and treatment significantly influence longevity, and the ANOVA for treatment gives a valid overall test of differences among groups rather than just comparing to a reference level.
+
+```{r}
+anova(lm_3)
+```
+
+##### **Refit the model to the data but this time reverse the order in which you entered the two explanatory variables in the model. Test the treatment effects with an ANOVA table. Why isn’t the table identical to the one from your analysis in 6?**
+
+-   The order changes the sequential sums of squares and F-values because **treatment and thorax length are somewhat correlated**, so the variation attributed to each depends on which is tested first.
+
+```{r}
+lm_4 <- lm(longevity.days ~ treatment + thorax.mm, data = data_3)
+anova(lm_4)
+
+```
+
+##### **Our analysis so far has assumed that the regression slopes for different treatment groups are the same. Is this a valid assumption? We have the opportunity to investigate just how different the estimated slopes really are. To do this, fit a new linear model to the data, but this time include an interaction term between the explanatory variables.**
+
+```{r}
+# Linear model with interaction
+lm_interact <- lm(longevity.days ~ thorax.mm * treatment, data = data_3)
+
+# View summary
+summary(lm_interact)
+tab_model(lm_interact)
+```
+
+##### **Another way to help assess whether the assumption of no interaction is a sensible one for these data is to determine whether the fit of the model is “better” when an interaction term is present or not, and by how much. We will learn new methods later in the course to determine this, but in the meantime a simple measure of model fit can be obtained using the adjusted R2 value. The ordinary R2 measures the fraction of the total variation in the response variable that is “explained” by the explanatory variables. This, however, cannot be compared between models that differ in the number of parameters because fitting more parameters always results in a larger R2, even if the added variables are just made-up random numbers. To compare the fit of models having different parameters, use the adjusted R2 value instead, which takes account of the number of parameters being fitted. Use the summary() command on each of two fitted models, one with and the other without an interaction term, and compare their adjusted R2 values. Are they much different? If not, then maybe it is OK to assume that any interaction term is likely small and can be left out.**
+
+-   The interaction term did improve the R squared adjusted by 0.2
+
+```{r}
+summary(lm_3)$adj.r.squared
+
+summary(lm_interact)$adj.r.squared
+
+```

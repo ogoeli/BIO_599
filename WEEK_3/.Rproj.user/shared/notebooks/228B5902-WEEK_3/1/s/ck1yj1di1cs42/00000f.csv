@@ -1,0 +1,8 @@
+"0",""
+"0","fit <- lm_2$fitted.values"
+"0","# Plot observed data"
+"0","plot(data_2$treatment, data_2$phase_shift,"
+"0","     main = ""Observed vs Fitted Phase Shift"","
+"0","     xlab = ""Treatment"","
+"0","     ylab = ""Phase Shift"","
+"0","     pch = 16, col = ""blue"")"

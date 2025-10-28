@@ -1,0 +1,7 @@
+"0","par(mfrow=c(2,2))"
+"0","plot(TA~TIMESTAMP_END, "
+"0","     data = flux, "
+"0","     col = ""plum"", "
+"0","     xlab = '', "
+"0","     ylab = ""Air Temperature (Deg C)"""
+"0",")"

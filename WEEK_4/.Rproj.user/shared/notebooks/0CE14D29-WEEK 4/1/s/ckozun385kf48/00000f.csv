@@ -1,0 +1,6 @@
+"0","    AIC(lm_1, varpow)"
+"2","Warning in AIC.default(lm_1, varpow) :"
+"2","
+ "
+"2"," models are not all fitted to the same number of observations
+"

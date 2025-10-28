@@ -1,0 +1,22 @@
+"0","    performance(fit_model_dredge)"
+"1","[34m# Indices of model performance[39m
+
+AIC   |   BIC |    R2 |   RMSE |  Sigma
+---------------------------------------
+705.8 | 714.7 | 0.239 | 40.938 | 41.872
+"
+"0","    set.seed(123)"
+"0","    performance_cv(fit_model_dredge, method = ""k_fold"", k = 5, stack = FALSE)"
+"1","[34m# Cross-validation performance (5-fold method)[39m
+
+MSE  | MSE_SE | RMSE | RMSE_SE |    R2 | R2_SE
+----------------------------------------------
+1716 |   1565 |   38 |      19 | 0.011 |  0.63
+"
+"0","    performance(fit_model_LRT)"
+"1","[34m# Indices of model performance[39m
+
+AIC   |   BIC |    R2 |   RMSE |  Sigma
+---------------------------------------
+704.1 | 715.2 | 0.280 | 39.835 | 41.061
+"

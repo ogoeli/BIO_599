@@ -1,0 +1,1 @@
+"0","lm_1 <- lm( data_1$Richness ~ data_1$NAP)"

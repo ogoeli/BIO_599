@@ -1,0 +1,667 @@
+---
+title: |
+  | Machine Learning
+  | For Ecological Research
+author: "NAU"
+date: "Jeremy Forsythe"
+classoption: "aspectratio=169"
+output: 
+  beamer_presentation:
+    includes:
+      in_header: inheader.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Machine Learning Publications in Ecology
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.65\textwidth]{Images/ML_EcologyPubs.png}
+\end{figure}
+
+\tiny $\uparrow$ Cui et. al. (2023). Advances and applications of machine learning and deep learning in environmental ecology. Environmental Pollution Vol 335.
+
+## Machine Learning Definition
+
+\begin{columns}
+
+  \column{0.6\textwidth}
+  
+  \underline{Widely Accepted Definition:}
+  
+  \vspace{1em}
+  
+  A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$, if its performance at tasks in $T$, as measured by $P$, improves with experience $E$. 
+
+
+  \column{0.4\textwidth}
+    \begin{center}
+    \includegraphics[width=.75\linewidth]{Images/mlMitchell.png}
+    \end{center}
+    
+
+\end{columns}
+
+## Scientific Method
+
+\centering
+\includegraphics[width=\textwidth]{Images/AnalysisProcess.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Tuia et. al. (2022). Perspectives in machine learning for wildlife conservation. Nat Commun 13, 792.
+
+## Big Picture Goals?
+
+\begin{columns}
+  \column{.4\textwidth}
+      \centering
+      \underline{Inference: Explanatory Power}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/EcologyPatterns.png}
+  \column{.6\textwidth}
+      \centering
+      \underline{Prediction: Predictive Power}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/EcologyPredict.png}
+      
+      \vspace {.5em}
+      
+      {\tiny $\leftarrow \uparrow$ Heilman et. al. (2022). Ecological forecasting of tree growth: Regional fusion of tree-ring and forest inventory data to quantify drivers and characterize uncertainty. Global Change Biology, 28, 2442–2460. \par}
+\end{columns}
+
+## OLS vs. Machine Learning
+
+\begin{columns}
+  \column{.4\textwidth}
+      \centering
+      \underline{OLS Regression}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/OLSregression.png}
+      
+      $y_i = \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \varepsilon_i$
+  \column{.6\textwidth}
+      \centering
+      \underline{Machine Learning}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/Copper.png}
+      
+      $y_i = ? x_{i...}$
+\end{columns}
+
+## OLS vs. Machine Learning
+
+\begin{columns}
+  \column{.4\textwidth}
+      \centering
+      \underline{OLS Regression}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/OLSregression.png}
+      
+      $y_i = \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \varepsilon_i$
+  \column{.6\textwidth}
+      \centering
+      \underline{Machine Learning}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\columnwidth]{Images/Ruadh.png}
+      
+      $y_i = ? x_{i...}$
+\end{columns}
+
+## Tradeoffs?
+
+\begin{columns}
+  \column{.55\textwidth}
+      \centering
+      \includegraphics[width=\columnwidth]{Images/StatVml.png}
+      
+      \vspace{.5em}
+      
+      {\tiny $\leftarrow$ Al-Hindawi et. al. 2021. A Pro-con Debate for Machine Learning vs. Traditional Statistics.\par}
+      
+  \column{.4\textwidth}
+      \centering
+      \includegraphics[width=\columnwidth]{Images/ML_Tradeoff_Opinion.png}
+      
+        
+      \vspace{1em}
+      
+      {\tiny $\rightarrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.\par}
+\end{columns}
+
+## Opinions?
+
+\begin{columns}
+  \column{.55\textwidth}
+      \centering
+      \includegraphics[width=.6\columnwidth]{Images/Opinion.jpg}
+      
+      \vspace{.5em}
+      
+      {\tiny $\leftarrow$ Poster made by Amber Share at Bored Panda from ACTUAL Yelp review of the Grand Canyon. \par}
+      
+  \column{.4\textwidth}
+      \centering
+      \includegraphics[width=\columnwidth]{Images/ML_Tradeoff_Opinion.png}
+      
+        
+      \vspace{1em}
+      
+      {\tiny $\rightarrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.\par}
+\end{columns}
+
+## Back To Barney \& Moe
+
+\centering
+\includegraphics[width=\textwidth]{Images/barney-vs-ols.jpg}
+
+\vspace{1em}
+
+``All models are wrong, but some are useful''. - George Box
+
+## Machine Learning Basics
+
+\begin{columns}
+
+  \column{0.4\textwidth}
+  
+  \underline{Widely Accepted Definition:}
+  
+  \vspace{1em}
+  
+  A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$, if its performance at tasks in $T$, as measured by $P$, improves with experience $E$. 
+  
+  \vspace{.5em}
+  
+  {\tiny $\rightarrow$ Cui et. al. (2023). Advances and applications of machine learning and deep learning in environmental ecology. Environmental Pollution Vol 335.\par}
+
+  \column{0.6\textwidth}
+    \begin{center}
+    \includegraphics[width=\linewidth]{Images/ML_Process.png}
+    \end{center}
+    
+\end{columns}
+
+## Machine Learning Basics : Task
+
+\begin{columns}
+
+  \column{0.4\textwidth}
+  
+  \underline{Task (T):}
+  
+  \vspace{.5em}
+  
+  \textbf{Classification:} Which category does $x_i$ belong to?
+    
+  \vspace{.5em}
+  
+  \textbf{Regression:} Given predictor(s), estimate a corresponding numerical target variable.
+    
+  \vspace{.5em}
+  
+  \textbf{Anomaly Detection:} Given a set of observations, flag the unusual ones.
+  
+  \vspace{.5em}
+  
+  {\tiny $\rightarrow$ Cui et. al. (2023). Advances and applications of machine learning and deep learning in environmental ecology. Environmental Pollution Vol 335.\par}
+
+  \column{0.6\textwidth}
+    \begin{center}
+    \includegraphics[width=\linewidth]{Images/ML_Process_Task.png}
+    \end{center}
+    
+\end{columns}
+
+## Machine Learning Basics : Experience
+
+\begin{columns}
+
+  \column{0.4\textwidth}
+  
+  \underline{Experience (E):}
+  
+  \vspace{.5em}
+  
+  \textbf{Data:} A Collection of examples, data points, observations.
+    
+  \vspace{.5em}
+  
+  \textbf{Supervised or Unsupervised Learning}
+  \vspace{.5em}
+  
+  {\tiny $\rightarrow$ Cui et. al. (2023). Advances and applications of machine learning and deep learning in environmental ecology. Environmental Pollution Vol 335.\par}
+
+  \column{0.6\textwidth}
+    \begin{center}
+    \includegraphics[width=\linewidth]{Images/ML_Process_Experiance.png}
+    \end{center}
+    
+\end{columns}
+
+## Supervised vs Unsupervised Learning
+
+\begin{columns}
+
+  \column{0.25\textwidth}
+    \begin{center}
+      \underline{Overview}
+      
+      \vspace{1em}
+      
+      \includegraphics[width=\linewidth]{Images/SuperVsUnsuper.png}
+    \end{center}
+
+  \column{0.35\textwidth}
+    \begin{center}
+      \underline{Supervised Learning}
+      
+      \vspace{.5em}
+      {\small Learn a function that, given a sample of data and desired outputs, best approximates the relationship between input and output observable in the data.}
+      
+      \vspace{0.5em}
+      
+      \includegraphics[width=\linewidth]{Images/Supervised.png}
+    \end{center}
+    
+  \column{0.4\textwidth}
+    \begin{center}
+      \underline{Unsupervised Learning}
+      
+      \vspace{0.5em}
+      
+      {\small Goal Is To Infer The Natural Structure Present Within A Set Of Data Points With Prior Expectations.}
+      
+      \vspace{0.5em}
+      
+      \includegraphics[width=\linewidth]{Images/Unsupervised.png}
+    \end{center}
+  
+\end{columns}
+
+## Machine Learning Basics : Performance Measurements
+
+\begin{columns}
+
+  \column{0.4\textwidth}
+  
+  \underline{Performance Measure (P):}
+  
+  \vspace{.5em}
+  
+  Evaluates the abilities of the machine learning system to perform the task (T).
+    
+  \vspace{.5em}
+  
+  For example, in regression you could use: \textbf{RMSE, R\textsuperscript{2}, RE}
+  \vspace{.5em}
+  
+  {\tiny $\rightarrow$ Cui et. al. (2023). Advances and applications of machine learning and deep learning in environmental ecology. Environmental Pollution Vol 335.\par}
+
+  \column{0.6\textwidth}
+    \begin{center}
+    \includegraphics[width=\linewidth]{Images/ML_Process_Performance.png}
+    \end{center}
+    
+\end{columns}
+
+## Machine Learning Basics : Terms
+
+\textbf{Given} a set of $n$ observations (instances or samples), \textbf{estimate} the relationship between $i$ independent variables (predictors) and a dependent variable (target, response).
+
+\centering
+
+\underline{Given} $x_i = (x_{i1},x_{i2},...,x_in)$ 
+
+\vspace{.5em}
+
+\underline{and} $y=y_1,y_2,...,y_n$ :
+
+\vspace{.5em}
+
+\underline{What is} $y = f(x) + \varepsilon$?
+
+## Machine Learning Basics : Example
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/ExampleData.png}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.95\columnwidth]{Images/ExampleDataRegression.png}
+\end{columns}
+
+## Machine Learning Basics : Noisy Signals
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.95\columnwidth]{Images/sdExample.png}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.95\columnwidth]{Images/sdExampleRegression.png}
+\end{columns}
+
+## Machine Learning Basics : Recipe
+
+\begin{columns}
+  \column{0.7\textwidth}
+    \begin{enumerate}
+      \item Split Data Into \textbf{Training} and \textbf{Test} Datasets. (Cross Validation)
+      \item \textbf{Fit} Candidate Models on Training Dataset
+      \item \textbf{Assess} Performance of Candidate Models on Testing Dataset Using Same Set of Metrics
+      \item \textbf{Choose} Final Model Form
+      \item \textbf{Fit} Final Model Form
+      \item \textbf{Interpret} Model Output / \textbf{Predict} Future Responses
+      \item Walk Away Feeling \textbf{Empowered $\rightarrow$}
+    \end{enumerate}
+  \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/empowered.jpeg}
+\end{columns}
+
+## Tips \& Tricks : Model Form
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \underline{\textbf{Parametric Models:}}
+    
+    \vspace{0.5em}
+    
+    \begin{itemize}
+      \item Summarizes data with a fixed set of model parameters in a fixed model form.
+      \item \textbf{Benefits:} Simple, Fast, Require Less Training Data
+      \item \textbf{Limitations:} Constrained By Model Form, Model May Not Represent True Relationship
+      \item \textbf{Examples:} Logistic Regression, Linear Discriminant Analysis
+    \end{itemize}
+  \column{0.5\textwidth}
+    \underline{\textbf{Nonparametric Models:}}
+    
+    \vspace{0.5em}
+    
+    \begin{itemize}
+      \item Seek the best fit to the training data without a specified model form.
+      \item \textbf{Benefits:} Flexible, Potentially Higher Performance
+      \item \textbf{Limitations:} Requires More Data, Slower, Overfitting
+      \item \textbf{Examples:} KNN, Support Vector Machines, Random Forests
+    \end{itemize}
+\end{columns}
+
+
+## Tips \& Tricks : Bias & Overfitting
+
+\begin{columns}
+
+  \column{0.5\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{Images/OverUnderFit.png}
+    \end{center}
+    
+  \column{0.5\textwidth}
+  
+  \underline{Bias-Variance Tradeoff}
+  
+  \vspace{0.5em}
+  
+  \begin{itemize}
+  
+    \item Model is too simple, it will have very few parameters then it may have high bias and low variance.
+    
+    \vspace{0.5em}
+    
+    \item On the other hand if the model has large number of parameters then it’s going to have high variance and low bias.
+    
+    \vspace{0.5em}
+    
+    \item Our job is to strike the correct balance.
+    
+  
+  \end{itemize}
+    
+\end{columns}
+
+## There Is No Magic...
+
+\begin{columns}
+    
+  \column{0.5\textwidth}
+  
+  There is no magic here, no one model is always better than another.
+  
+  \vspace{1em}
+  
+  Fit the models, make an informed choice, enjoy your life!
+
+    
+  \column{0.5\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{Images/noMagic.png}
+    \end{center}
+  
+\end{columns}
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/kNN.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## K Nearest Neighbor (KNN)
+
+\begin{columns}
+  \column{0.4\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/kNN_explained.png}
+  \column{0.6\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/kNN_explained2.png}
+\end{columns}
+
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/LassoRidge.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Lasso \& Ridge Regression
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \underline{Polynomial Regression (No Penalty)}
+    
+    \vspace{.5em}
+    
+    $y= \beta_0 + \beta_1x+ \beta_2x^2 +\beta_3x^3+...+\beta_nx^n + \varepsilon$
+    
+    \vspace{.5em}
+    
+    \includegraphics[width=.8\columnwidth]{Images/rlPolyfit.png}
+  \column{0.5\textwidth}
+    \centering
+    \underline{Ridge Regression (Overfitting Penalty)}
+    
+    \vspace{1.5em}
+    
+    \includegraphics[width=.8\columnwidth]{Images/rlPenaltyfit.png}
+\end{columns}
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/SVM.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Support Vector Machines 
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/SVMclassification.png}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/SVMregression.png}
+\end{columns}
+
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/randomForest.png}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Decision Trees
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.55\columnwidth]{Images/DecisionTree1.png}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=.55\columnwidth]{Images/DecisionTree2.png}
+\end{columns}
+
+## Random Forest
+
+\centering
+\includegraphics[width=.925\linewidth]{Images/RandomForestExplained.png}
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/boosted.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Boosting
+
+\centering
+\includegraphics[width=.925\linewidth]{Images/BoostingExplained.png}
+
+## Adaptive vs. Gradient Boosting
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    
+    \vspace{1em}
+    
+    \textbf{\underline{Adaptive Boosting:}}
+    
+    \vspace{1em}
+    
+    \includegraphics[width=\columnwidth]{Images/adaBoost.png}
+  \column{0.5\textwidth}
+    \centering
+    
+    \vspace{1em}
+    
+    \textbf{\underline{Gradient Boosting:}}
+    
+    \vspace{1em}
+    
+    \includegraphics[width=\columnwidth]{Images/gradientBoost.png}
+\end{columns}
+
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/neuralNets.png}
+
+\vspace{2em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Neural Networks
+
+\centering
+\includegraphics[width=.8\linewidth]{Images/Neurons.png}
+
+## Neural Networks
+
+\centering
+\includegraphics[width=.8\linewidth]{Images/ANNexplained.png}
+
+## Machine Learning Model Overviews
+
+\centering
+\includegraphics[width=\linewidth]{Images/convNets.png}
+
+\vspace{1em}
+
+\tiny $\uparrow$ Pichler \& Hartig (2022). Machine Learning and Deep Learning -- A review for Ecologists. Preprint.
+
+## Convolutional Neural Networks
+
+\begin{columns}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/MuffinPups.jpeg}
+  \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\columnwidth]{Images/patterns.png}
+\end{columns}
+
+## Convolutional Neural Networks
+
+\centering
+\includegraphics[width=.9\linewidth]{Images/Convolutions.png}
+
+## Convolutional Neural Networks
+
+\centering
+\includegraphics[width=.85\linewidth]{Images/filters.png}
+
+## Convolutional Neural Networks
+
+\centering
+\includegraphics[width=\linewidth]{Images/filters2.jpeg}
+
+## Convolutional Neural Networks
+
+\centering
+\includegraphics[width=\linewidth]{Images/filters3.jpeg}
+
+## Machine Learning in R
+
+\centering
+\includegraphics[width=.75\linewidth]{Images/RCaret.png}
+
+## Snack Overflow
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{Images/F24Dates.png}
+\end{figure}
+
+

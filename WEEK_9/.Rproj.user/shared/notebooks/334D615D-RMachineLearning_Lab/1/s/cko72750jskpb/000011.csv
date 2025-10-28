@@ -1,0 +1,6 @@
+"0","plot(SW_IN~TIMESTAMP_END, "
+"0","     data = flux, "
+"0","     col = ""darkorange1"", "
+"0","     xlab = '', "
+"0","     ylab = ""Incoming Shortwave (W m-2)"""
+"0",")"

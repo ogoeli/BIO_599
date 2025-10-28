@@ -1,0 +1,6 @@
+"0","ggplot(data_1, aes(x = NAP, y = Richness)) +"
+"0","  geom_point(size = 2, color = ""red"") +"
+"0","  geom_smooth(method = ""lm"", color = ""black"") +"
+"0","  theme_bw()"
+"1","[38;5;252m`geom_smooth()` using formula = 'y ~ x'[39m
+"

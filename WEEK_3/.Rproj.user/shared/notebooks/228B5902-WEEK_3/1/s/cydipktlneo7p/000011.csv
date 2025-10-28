@@ -1,0 +1,2 @@
+"0","lm_2 <- lm(shift ~ treatment, data = data_2)"
+"0","tab_model(lm_2)"

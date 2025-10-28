@@ -1,0 +1,7 @@
+"0",""
+"0","    # If residuals show heteroscedasticity by Treatment or Nutrient, include var weights:"
+"0","    g_full_w <- gls(Concentration ~ Treatment * Nutrient * Abundance_f,"
+"0","                    data = data_3,"
+"0","                    weights = varIdent(form = ~1 | Treatment),  # different residual sd per Treatment"
+"0","                    method = ""ML"")"
+"0",""

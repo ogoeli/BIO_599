@@ -1,0 +1,6 @@
+"0","    boxplot(data1$dbh,"
+"0","            main = ""Boxplot of Sparrow DBH"","
+"0","            ylab = ""DBH (mm)"","
+"0","            xlab = ""All Sparrows"","
+"0","            col = ""lightblue"","
+"0","            border = ""darkblue"")"

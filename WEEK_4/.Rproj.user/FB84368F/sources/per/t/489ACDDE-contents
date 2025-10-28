@@ -1,0 +1,372 @@
+---
+title: "WEEK 4"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(nlme)
+library(ggResidpanel)
+library(ggeffects)
+
+```
+
+## **Exercise 1: Trunk Flare**
+
+## Goal: Explore how well diameter at breast height (DBH) predicts trunk flare diameter in trees, and determine whether the relationship differs among species. Specifically, determine whether a GLS model that accounts for non-constant variance provides a better fit than a standard linear model.
+
+1.  **Read the data** from the `trunkfl.csv` file.
+
+2.  **View the first few lines** of data to confirm successful import and examine the structure.
+
+    ```{r}
+    data_1 <- read.csv("trunkfl.csv")
+    head(data_1)
+    ```
+
+3.  **Subset the data** to include only Acer saccharinum (*Species = 4*).
+
+    ```{r}
+    sub <- data_1 |>
+      filter(Species == 4)
+    ```
+
+4.  **Make a scatter plot** of trunk flare vs. diameter at breast height (DBH) for Acer saccharinum. Include a fitted line.
+
+    ```{r}
+    ggplot(sub, aes(x = TF, y = DBH)) +
+      geom_point()+
+      geom_smooth(method = "lm", color = "black") +
+      theme_bw()
+    ```
+
+5.  **Fit a linear model** relating trunk flare to DBH using `lm()`. Use residual plots to evaluate model assumptions.
+
+    ```{r}
+    lm_1 <- lm(TF ~ DBH, data = sub)
+    lm_1
+    ```
+
+6.  **Fit a GLS model** where variance increases with DBH using `varPower()`.
+
+    ```{r}
+    varpow <- gls(TF ~ DBH, weights = varPower(form = ~ TF), data = sub)
+    varpow
+    ```
+
+7.  **Create diagnostic plots** of standardized residuals from the GLS model. Check homogeneity and normality assumptions using residual vs. fitted, QQ plots, and histograms.
+
+    ```{r}
+    ggResidpanel::resid_panel(lm_1, plots = c("resid", "qq", "hist"), nrow = 1)
+    plot(lm_1)
+    ```
+
+8.  **Use AIC to compare models**: Which model (LM vs GLS) gives the better fit?
+
+    ```{r}
+    AIC(lm_1, varpow)
+    ```
+
+    -   The GLS model performs better since the AIC score is lower than the LM model.
+
+9.  **Compare parameter estimates** and their standard errors between LM and GLS. Do the estimates or inference change?
+
+    ```{r}
+    AIC(lm_1, varpow)
+    ```
+
+10. **Use the full dataset (all species)** to:
+
+    -   Fit a GLS model with the interaction between Species and DBH.
+
+    -   Identify the optimal variance structure.
+
+    -   Identify the optimal fixed effects structure (using AIC and nested model comparison).
+
+    -   Plot the final model and interpret the results.
+
+    ::: {#comment}
+    The full model performs better than the rest based on its lower AIC score
+    :::
+
+```{r}
+
+#Fit a GLS model with the interaction between Species and DBH.
+varpow_2 <- gls(TF ~ Species * DBH, weights = varPower(form = ~ Species), data = data_1)
+varpow_2
+
+
+#Identify the optimal variance structure.
+# varIdent: different residual variances per Species
+gls1 <- gls(TF ~ Species * DBH, data = data_1,
+            weights = varIdent(form = ~1 | Species))
+
+# varPower: variance depends on fitted values
+gls2 <- gls(TF ~ Species * DBH, data = data_1,
+            weights = varPower(form = ~ fitted(.)))
+
+# varExp: variance increases exponentially with DBH
+gls3 <- gls(TF ~ Species * DBH, data = data_1,
+            weights = varExp(form = ~ DBH))
+
+# varConstPower: flexible power function of DBH
+gls4 <- gls(TF ~ Species * DBH, data = data_1,
+            weights = varConstPower(form = ~ DBH))
+
+
+#Identify the optimal fixed effects structure (using AIC and nested model comparison).
+gls_full <- gls(TF ~ Species * DBH, data = data_1, weights = varIdent(~1|Species))
+gls_no_inter <- gls(TF ~ Species + DBH, data = data_1, weights = varIdent(~1|Species))
+gls_species <- gls(TF ~ Species, data = data_1, weights = varIdent(~1|Species))
+gls_dbh <- gls(TF ~ DBH, data = data_1, weights = varIdent(~1|Species))
+
+# Compare models
+AIC(gls_full, gls_no_inter, gls_species, gls_dbh)
+anova(gls_full, gls_no_inter)  # Likelihood ratio test for interaction
+
+##Plot the final model and interpret the results.
+library(ggplot2)
+
+# Create predicted values
+data_1$pred <- predict(gls_full)
+
+ggplot(data_1, aes(x = DBH, y = TF, color = Species)) +
+  geom_point(alpha = 0.5) +
+  geom_line(aes(y = pred), size = 1) +
+  theme_minimal() +
+  labs(title = "GLS model: TF ~ Species * DBH",
+       y = "TF",
+       x = "DBH")
+
+
+```
+
+## **Exercise 2: Benthic Biodiversity**
+
+## Goal: Evaluate how nutrient concentration in benthic mesocosms is influenced by macrofaunal biomass, enrichment (algae), and nutrient type. Test for and model heteroscedasticity using GLS, and identify the optimal fixed and variance structure for the data. Examine how model results change when a potential outlier is removed.
+
+1.  **Read the data** from the `Biodiversity.csv` file.
+
+2.  **Check the structure** of the dataset and confirm it imported correctly.
+
+    ```{r}
+    data_2 <- read.csv("Biodiversity.csv")
+
+    str(data_2)
+    ```
+
+3.  **Create a boxplot** showing the variation in concentration for each nutrient–enrichment combination. Is there visual evidence of heterogeneity?
+
+    ```{r}
+    library(viridis)
+
+    # Convert to factors
+    data_2$Nutrient <- as.factor(data_2$Nutrient)
+    data_2$Treatment <- as.factor(data_2$Treatment)
+
+    ggplot(data_2, aes(x = interaction(Nutrient, Treatment), y = Concentration, fill = Treatment)) +
+      geom_boxplot() +
+      theme_classic() 
+      
+    ```
+
+4.  **Fit a linear model** using biomass, enrichment, nutrient, all two-way interactions, and the three-way interaction.
+
+    ```{r}
+    lm_2 <- lm(Biomass ~ Treatment * Nutrient, data = data_2)
+    summary(lm_2)
+
+    lm_3 <- lm(Biomass ~ Treatment * Nutrient * Concentration, data = data_2)
+    summary(lm_3)
+    ```
+
+5.  **Examine residual plots**. Is the homogeneity of variance assumption met?
+
+    ```{r}
+    plot(lm_2)
+    ```
+
+6.  **Plot residuals vs predictors** (biomass, treatment, nutrient). Which variable(s) may be driving the heterogeneity?
+
+    ```{r}
+    # Extract residuals from the model
+    residuals_lm <- residuals(lm_2)
+
+    # Base R plots
+    par(mfrow = c(1,3))  # 3 plots in one row
+
+    # 1. Residuals vs Biomass (not typical since Biomass is response, usually vs fitted values)
+    plot(lm_2$fitted.values, residuals_lm,
+         xlab = "Fitted Biomass",
+         ylab = "Residuals",
+         main = "Residuals vs Fitted")
+    abline(h = 0, col = "red", lty = 2)
+
+    # 2. Residuals vs Treatment
+    plot(data_2$Treatment, residuals_lm,
+         xlab = "Treatment",
+         ylab = "Residuals",
+         main = "Residuals vs Treatment")
+
+    # 3. Residuals vs Nutrient
+    plot(data_2$Nutrient, residuals_lm,
+         xlab = "Nutrient",
+         ylab = "Residuals",
+         main = "Residuals vs Nutrient")
+
+    ```
+
+7.  **Fit GLS models** using different variance structures:
+
+    -   One accounting for treatment.
+
+    -   One accounting for nutrient.
+
+    -   One accounting for both treatment and nutrient interaction.
+
+    ```{r}
+
+    # 1. GLS model accounting for heterogeneity by Treatment
+    gls_treat <- gls(
+      Biomass ~ Treatment * Nutrient,
+      data = data_2,
+      weights = varIdent(form = ~1 | Treatment)
+    )
+
+    # 2. GLS model accounting for heterogeneity by Nutrient
+    gls_nutr <- gls(
+      Biomass ~ Treatment * Nutrient,
+      data = data_2,
+      weights = varIdent(form = ~1 | Nutrient)
+    )
+
+    # Make sure factors are properly defined
+    data_2$Treatment <- as.factor(data_2$Treatment)
+    data_2$Nutrient <- as.factor(data_2$Nutrient)
+
+    # Create an interaction factor
+    data_2$TreatNutr <- interaction(data_2$Treatment, data_2$Nutrient)
+
+    # GLS model with variance by Treatment:Nutrient interaction
+    gls_inter <- gls(
+      Biomass ~ Treatment * Nutrient,
+      data = data_2,
+      weights = varIdent(form = ~1 | TreatNutr)
+    )
+
+
+    ```
+
+8.  **Compare GLS models** using `anova()`. Which model best accounts for heterogeneity? Plot residuals to confirm.
+
+    -   The model that best accounts for heterogeneity is the model with only the treatment since the AIC score is the lowest. The loglikelihood is similar so I judged with AIC
+
+    ```{r}
+    # Compare variance structures with likelihood ratio tests
+    anova(gls_treat, gls_nutr, gls_inter)
+
+    #plot residual from model with lowest AIC
+    plot(gls_treat)
+
+    # Extract residuals
+    resid_df <- data.frame(
+      fitted = fitted(gls_treat),
+      residuals = resid(gls_treat, type = "normalized"),
+      Treatment = data_2$Treatment,
+      Nutrient = data_2$Nutrient,
+      TreatNutr = data_2$TreatNutr
+    )
+
+    resid_df
+    ```
+
+9.  **Use ML estimation** to test and refine the fixed effects structure:
+
+    -   Test the 3-way interaction.
+
+    -   Drop insignificant two-way interactions one at a time using likelihood ratio tests.
+
+    -   Finalize the fixed effects.
+
+        -   The model without any interaction is the best performing model since the AIC is lower
+
+    ```{r}
+
+    # Fit full model with ML (required for likelihood ratio tests)
+    gls_full_ML <- gls(Biomass ~ Treatment * Nutrient,
+                       data = data_2,
+                       weights = varIdent(form = ~1 | Treatment),  # best variance structure
+                       method = "ML")
+
+    # Drop 2-way interaction for testing
+    gls_no_inter <- update(gls_full_ML, . ~ . - Treatment:Nutrient)
+    anova(gls_full_ML, gls_no_inter)  
+
+    gls_no_inter
+    ```
+
+10. **Fit the final model using REML**. Check model assumptions. Identify any influential outliers.
+
+    ```{r}
+
+    # Refit final model with REML
+    gls_final <- gls(formula(gls_no_inter), 
+                     data = data_2, 
+                     weights = varIdent(form = ~1 | Treatment), 
+                     method = "REML")
+
+
+    ```
+
+11. **Summarize and visualize the final model.**
+
+    ```{r}
+
+    summary(gls_final)
+
+    plot(gls_final)
+
+    plot(ggpredict(gls_final), show_data=TRUE)
+
+    ```
+
+12. **Refit the model without the outlier.** Redo model selection and comparison. How do results change?
+
+    -   The AIC reduced when I took out the outlier. The model without interaction is still the better performing model in both situation but the AIC drop after taking out the outlier.
+
+    ```{r}
+
+    # Standardized residuals
+    resid_std <- resid(gls_final, type = "normalized")
+
+    # Find the index of the largest absolute residual
+    which.max(abs(resid_std))
+
+
+    ##take out the outlier
+    data_no_outlier <- data_2[-which.max(abs(resid_std)), ]
+
+
+    #Refit the model without the outlier
+    gls_no_outlier <- gls(Biomass ~ Treatment * Nutrient,
+                           data = data_no_outlier,
+                           weights = varIdent(form = ~1 | Treatment),
+                           method = "REML")
+    summary(gls_no_outlier)
+
+
+    #Redo model selection and comparison
+    gls_reduced <- update(gls_no_outlier, . ~ . - Treatment:Nutrient)
+
+    # Compare
+    anova(gls_no_outlier, gls_reduced)
+    AIC(gls_no_outlier, gls_reduced)
+
+    #plot
+    plot(ggpredict(gls_reduced), show_data=TRUE)
+
+
+
+    ```

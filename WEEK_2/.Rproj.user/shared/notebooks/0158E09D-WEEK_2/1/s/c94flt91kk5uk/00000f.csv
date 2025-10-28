@@ -1,0 +1,3 @@
+"0","    data$flux <- as.numeric(data$flux)"
+"2","Warning: NAs introduced by coercion"
+"0","    hist(data$flux)"

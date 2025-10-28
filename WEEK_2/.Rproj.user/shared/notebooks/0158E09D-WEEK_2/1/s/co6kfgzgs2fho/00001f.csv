@@ -1,0 +1,3 @@
+"0","    data$temp <- as.numeric((data$temp))"
+"2","Warning: NAs introduced by coercion"
+"0","    boxplot(data$temp)"

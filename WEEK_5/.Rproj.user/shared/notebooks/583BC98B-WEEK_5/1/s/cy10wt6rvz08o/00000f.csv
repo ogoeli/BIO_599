@@ -1,0 +1,12 @@
+"0","    M2.lme= lme(hr ~ log.move.sc*Season, random=~1|BearIDYear, "
+"0","         data = data, method=""REML"")"
+"0","    summary(M2.lme)"
+"1","Linear mixed-effects model fit by "
+"1","REML
+"
+"1","  Data:"
+"1"," "
+"1","data"
+"1"," "
+"1","
+"

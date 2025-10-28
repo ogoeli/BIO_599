@@ -1,0 +1,2 @@
+"0","data_2$treatment <- factor(data_2$treatment, levels = c(""control"", ""knee"", ""eyes""))"
+"0",""

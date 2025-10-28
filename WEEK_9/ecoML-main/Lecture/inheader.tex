@@ -1,0 +1,18 @@
+\usepackage{float}
+
+
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+\usetheme{focus} 
+
+\definecolor{main}{RGB}{77,126,169}
+\definecolor{background}{RGB}{251,249,226}
+
+\subtitle{\vspace{-5em} \huge \textbf{\underline{ecoML Workshop:}}}
+\titlegraphic{\vspace{1.25em}\includegraphics[width=.75\linewidth]{Images/Moe.png}}
+\institute{\vspace{-2em} Jeremy Forsythe \\ \& Jazlynn Hall}

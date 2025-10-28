@@ -1,0 +1,6 @@
+"0","plot(VPD~TIMESTAMP_END, "
+"0","     data = flux, "
+"0","     col = ""firebrick4"", "
+"0","     xlab = '', "
+"0","     ylab = ""Vapor Pressure Deficit (hPa)"""
+"0",")"

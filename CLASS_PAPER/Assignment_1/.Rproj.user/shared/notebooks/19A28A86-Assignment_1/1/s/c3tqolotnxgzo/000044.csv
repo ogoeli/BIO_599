@@ -1,0 +1,5 @@
+"0",""
+"0","# Relationship example"
+"0","ggplot(dataset, aes(x = Precip, y = Stress_Level, color = Species)) + "
+"0","  geom_jitter(width=0.2, height=0.1) + theme_minimal()"
+"0",""

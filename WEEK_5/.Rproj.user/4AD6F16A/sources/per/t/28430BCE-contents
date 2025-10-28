@@ -1,0 +1,180 @@
+---
+title: "WEEK 5"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+## **Exercise 1: Bear Movement and Heart Rate**
+
+### This dataset includes GPS and heart rate data from black bears tracked across multiple years. Each record represents one “bear-year” (a unique individual in a specific year). You’ll explore how movement and season influence heart rate while accounting for repeated observations within bear-year.
+
+```{r}
+library(tidyverse)
+library(nlme)
+library(emmeans)
+library(visreg)
+library(sjPlot)
+library(ggeffects)
+```
+
+1.  **Read in the dataset** `bearmove.csv`. Create a centered and scaled version of `log.move` called `log.move.sc`.
+
+    ```{r}
+    data <- read.csv("bearmove.csv")
+
+
+    # Standardized trophic position, with the function scale
+    data$log.move.sc <- scale(data$log.move)
+
+    str(data)
+    ```
+
+2.  **Visualize** the relationship between `log.move.sc` and `log(hr)`, colored by `Season` and faceted by `BearIDYear`.
+
+    ```{r}
+    ggplot(data, aes(x = log.move.sc, y = log(hr), color = Season)) +
+      geom_point()+
+      facet_wrap(~ BearIDYear)
+    ```
+
+3.  **Fit a linear model** using `lm()` that ignores repeated measures. Include `log.move.sc`, `Season`, and their interaction as fixed effects.\
+    \> *Interpret the coefficients.*
+
+    -   the model is significant based on the p value
+
+    ```{r}
+    lm <- lm(hr ~ log.move.sc*Season, data = data)
+    summary(lm)
+    ```
+
+4.  **Fit a random intercept model** using `lmer()` with `BearIDYear` as a random intercept.\
+    \> *What does this model account for? Does it improve model fit compared to the linear model?*
+
+    -   The model accounts for the variance cause by bearIDYear. The intercept barely increased but the slope did improve.
+
+    ```{r}
+    m.gls <- gls(hr ~ log.move.sc*Season, data = data)
+    summary(m.gls)
+
+    M1.lme= lme(hr ~ log.move.sc, random=~1|BearIDYear, 
+         data = data, method="REML")
+    summary(M1.lme)
+    ```
+
+5.  **Fit a random coefficients model** that includes random slopes and intercepts for `log.move.sc * Season` by `BearIDYear`.\
+    \> *Does this model improve fit? Is it overparameterized or singular?*
+
+    -   The parameter did increase but I cant decide if it *overparameterized.*
+
+    ```{r}
+    M2.lme= lme(hr ~ log.move.sc*Season, random=~1|BearIDYear, 
+         data = data, method="REML")
+    summary(M2.lme)
+    ```
+
+6.  **Compare the random intercept and random slope models** using a likelihood ratio test or AIC.\
+    \> *Which model performs better and why?*
+
+    -   the model with the fitted **random coefficients performed better based on the lower AIC score**
+
+    ```{r}
+    anova(m.gls, M1.lme, M2.lme)
+
+    ```
+
+7.  **Propose a simpler alternative** to the maximal random slopes model.\
+    \> *What structure might better account for the data without overfitting?*
+
+    -   I currently don't understand what over fitting means here so I cant explain.
+
+## **Exercise 2: Canopy Nitrogen Allocation**
+
+### This dataset includes leaf nitrogen concentration (`narea`) and vertical canopy position (`dfromtop`) for leaves on 35 trees of two species.
+
+1.  **Read in the dataset** `prefdata.csv`.
+
+    ```{r}
+    data_2 <- read.csv("prefdata.csv")
+    ```
+
+2.  **Visualize** the relationship between `narea` and `dfromtop`, colored by species.
+
+    ```{r}
+    ggplot(data_2, aes(y = narea, x = dfromtop, color = species)) +
+      geom_point()
+    ```
+
+3.  **Fit a mixed-effects model** with:
+
+    -   Fixed effects: `species`, `dfromtop`, and their interaction
+
+    -   Random intercept: `ID` (individual tree)
+
+    ```{r}
+
+    lm_2 <- lme(narea ~ dfromtop * species, random = ~1|ID, data = data_2, method = "REML")
+    summary(lm_2)
+    ```
+
+4.  **Fit a model with a random slope** for `dfromtop` by `ID`.\
+    \> *Does this improve model fit?*
+
+    -   No, the AIC is higher for the model without interaction
+
+    ```{r}
+
+    lm_3 <- lme(narea ~ dfromtop, random = ~0+dfromtop|ID, data = data_2, method = "REML")
+    summary(lm_3)
+    ```
+
+5.  **Assess the significance** of the interaction between `species` and `dfromtop`.\
+    \> *Use either `car::Anova()` or compare a model with and without the interaction.*
+
+    ```{r}
+    anova(lm_2, lm_3)
+    ```
+
+<!-- -->
+
+1.  **Interpret the fixed effect coefficients** from the summary output.\
+    \> *What do they tell you about nitrogen allocation across species and canopy height?*
+
+    -   since the correlation is -0.44, I assume that as the nitrogen allocation increases, the canopy height decreases among the species. Which I do not believe but its from the analysis I sort of go with it. But I am still struggling to understand the concept so I cant interpret anything yet.
+
+2.  **Use `emmeans::emtrends()`** to extract and compare slopes of `dfromtop` by species.\
+    \> *Are they significantly different?*
+
+    -   yes, the p value is significant
+
+    ```{r}
+
+    tab_model(lm_2)
+
+    # Get estimated marginal means (EMMs)
+    emmeans_lm <- emmeans(lm_2, ~ dfromtop)
+
+    # Show means, standard errors, and 95% confidence intervals
+    summary(emmeans_lm, infer = c(TRUE, TRUE))
+
+    ```
+
+<!-- -->
+
+1.  **Visualize the final model predictions** using one of the following:
+
+    ```{r}
+      
+
+    # Extract the prediction data frame
+    pred.mm <- ggpredict(lm_2, terms = c("dfromtop", "species"))  # this gives overall predictions for the model
+    head(pred.mm)
+
+    plot(pred.mm)
+    ```
+
+    -   `visreg()`
+
+    -   `ggeffects::ggpredict()`
+
+    -   Custom `ggplot2` with ribbons and predicted lines

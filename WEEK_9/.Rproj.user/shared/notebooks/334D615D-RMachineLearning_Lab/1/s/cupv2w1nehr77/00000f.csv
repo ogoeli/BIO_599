@@ -1,0 +1,1 @@
+"0","fitControl <- trainControl(method=""cv"", number=10, allowParallel = TRUE) #in this case k=10 "

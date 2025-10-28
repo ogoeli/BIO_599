@@ -1,0 +1,4 @@
+"0",""
+"0","    #plot residual from model with lowest AIC"
+"0","    plot(gls_treat)"
+"0",""

@@ -1,0 +1,1 @@
+"0","data$flip_bill_ratio <- data$flipper_length_mm/data$bill_length_mm"

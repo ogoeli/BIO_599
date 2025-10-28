@@ -1,0 +1,6 @@
+"0","plot(SWC~TIMESTAMP_END, "
+"0","     data = flux, "
+"0","     col = ""dodgerblue3"", "
+"0","     xlab = '', "
+"0","     ylab = ""Soil Water Content (%)"""
+"0",")"

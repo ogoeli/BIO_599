@@ -1,0 +1,8 @@
+"0",""
+"0","##take out rows with NA"
+"0","data_1 <- na.omit(data)"
+"0","mean(data_1$bill_length_mm)"
+"1","[1]"
+"1"," 43.99279"
+"1","
+"

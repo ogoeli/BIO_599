@@ -1,0 +1,2 @@
+"0","    qqnorm(residuals(m1, type = ""normalized"")); qqline(residuals(m1, type = ""normalized""))"
+"0",""

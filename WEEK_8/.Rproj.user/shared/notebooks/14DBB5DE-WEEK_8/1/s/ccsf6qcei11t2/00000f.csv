@@ -1,0 +1,2 @@
+"0","    vario_best <- Variogram(ph_ratio, form = ~ Easting+ Northing, resType = ""normalized"")"
+"0","    plot(vario_best)"

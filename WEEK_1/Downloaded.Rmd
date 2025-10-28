@@ -1,0 +1,519 @@
+---
+title: "Workshop 1: Introduction to R, RStudio, and Data Manipulation with dplyr"
+author: "Xanthe Walker"
+output:
+  html_document:
+---
+
+> **Sources adapted and modified from:**  
+> Irizarry, Rafael A., and Michael I. Love (2016). *Data Analysis for the Life Sciences with R*. Taylor & Francis (VitalSource).  
+> Wickham, Hadley, Mine Çetinkaya-Rundel, and Garrett Grolemund (2023). *R for Data Science (2e)*. <https://r4ds.hadley.nz/>
+
+***
+
+# 1. Install R and RStudio
+
+- Download and install **R** from <https://www.r-project.org/>.  
+- Download and install **RStudio** (the IDE for R) from <https://www.rstudio.com/>.
+
+When you start RStudio, you’ll see two key regions: the **Console** (where you type and run R code) and the **Output/Plots/Files/Help** pane. Type code in the console and press **Enter** to run.
+
+> *Figure 1 (conceptual):* RStudio IDE with Console on the left; Environment/History/Files/Plots/Help on the right.
+
+# 2. Installing and loading packages
+
+R’s functionality is extended by **packages** (most from CRAN). Install once with `install.packages()`, then load in each new session with `library()`.
+
+```{r}
+# Install once (uncomment to run)
+# install.packages("tidyr")
+# install.packages("dplyr")
+# install.packages("readr")
+
+# Load every session
+library(tidyr)
+library(dplyr)
+library(readr)
+```
+
+If `library(pkg)` errors, you likely need to install it first with `install.packages("pkg")`.
+
+# 3. Use R Markdown
+
+R Markdown lets you combine **narrative text** and **executable code** in one document, and knit to **HTML**, **PDF**, or **Word**.
+
+## Getting started
+
+1. Create a new folder to hold your R Markdown work.  
+2. In **RStudio**: *File → New Project → Existing Directory* and select that folder.  
+3. Create a new R Markdown file: *File → New File → R Markdown…* (or open a provided `test.Rmd`).  
+4. Knit with the **Knit** button to render to HTML.
+
+## Anatomy of an Rmd
+
+The top is **YAML** that controls title, author, output options, and more:
+
+```yaml
+---
+title: "My First Rmd"
+author: "Your Name"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+```
+
+Then a **setup chunk** sets global options (executed but not shown in the output because of `include = FALSE`):
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4, echo = TRUE)
+```
+
+Write plain text using Markdown:
+- `#`/`##`/`###` for headers
+- `***` for a horizontal rule
+- `*italics*` and `**bold**`
+
+Code chunks execute R code:
+```{r example, eval=TRUE}
+x <- 1:5
+mean(x)
+```
+You can set `eval = FALSE` to show code without running it.
+
+# 4. R as a calculator (vectors, math, and more)
+
+R makes it easy to carry out mathematical operations and functions to all values in a vector at once. A vector is a simple array of numbers or characters, such as the measurements of a single variable on a sample of individuals.
+
+Use the left arrow “<-” (“less than” sign followed by a dash) and the c function (for concatenate) to create a vector containing a set of measurements.
+
+
+## Create vectors
+
+```r
+x <- c(11, 42, -3, 14, 5)           # numeric
+x <- c(1:10)                        # integers 1..10
+x <- c("Watson", "Crick", "Wilkins")# character (quotes required)
+```
+
+Sequences and repetition:
+Use the seq function to generate a sequence of numbers and store in a vector, Use rep to repeat values a specified number of times and store to a vector.
+
+```r
+x <- seq(0, 10, by = 0.1)           # 0, 0.1, ..., 10
+x <- rep(c(1, 2, 3), c(2, 1, 4))    # 1 1 2 3 3 3 3
+```
+
+View and remove objects:
+To view contents of any object, including a vector, type its name and enter, or use the print command. rm() removes the vector x from the local R environment
+
+```r
+x        # print
+print(x) # same
+rm(x)    # remove object x
+```
+
+## Index and replace
+Use integers in square brackets to indicate specific elements of a vector. 
+```r
+x <- 10:20
+x[5]           # 5th value
+x[2:6]         # 2nd through 6th
+x[-1]          # all but the first
+x[5] <- 4.2    # replace 5th element toa  value of 4.2
+```
+
+## Vectorized math
+These operations are carried out on every element of the vector
+```r
+x + 1          # add 1 to each element of x
+x^2            # square each element of x
+x/2            # divide each element of x by 2
+10 * x         # multiply each element of x by 10
+
+y <- 6:10
+x * y        # yields a new vector whoseelements are x[1]*y[1], x[2]*y[2], ... x[n]*y[n]
+
+#If x and y are not the same length, then the shorter vector is elongated by starting again at the beginning.
+```
+
+## Common transforms  
+The most common data transformations, illustrated using the single variable x.
+
+```r
+sqrt(x)          # square root
+sqrt(x + 0.5)    # modified square root transformation
+log(x)           # the natural log of x
+log10(x)         # log base 10 of x
+exp(x)           # exponential ("antilog") of x
+abs(x)           # absolute value of x
+asin(sqrt(x))    # arcsine square root (used for proportions)
+```
+
+## Basic statistics
+Here are a few basic statistical functions on a numeric vector named x. Most of them will require the na.rm=TRUE option if the vector includes one or more missing values.
+
+```r
+sum(x)                 # the sum of values in x
+length(x)              # number of elements (including missing)
+mean(x)                # sample mean
+var(x)                 # sample variance
+sd(x)                  # sample standard deviation
+min(x)                 # smallest element in x
+max(x)                 # largest element in x
+range(x)               # smallest and largest elements in x
+median(x)              # median of elements in x
+quantile(x)            # quantiles of x
+unique(x)              # extracts only the unique values of x
+sort(x)                # sort, smallest to largest
+weighted.mean(x, w)    # weighted mean
+```
+
+## Character helpers
+
+```r
+x <- c("alpha", "Beta", "gamma")
+casefold(x)              # convert to lower case
+casefold(x, upper=TRUE)  # convert to upper case
+substr(x, 2, 4)          # extract 2nd to 4th characters of each element of x
+paste(x, "ly", sep="")   # paste "ly" to the end of each element in x
+nchar(x)                 # no. of characters in each element of x
+grep("a", x)             # which elements of x contain letter "a" ?
+grep("a|b", x)           # which elements of x contain letter "a" or letter "b"?
+strsplit(x, "a")         # split x into pieces wherever the letter "a" occurs
+```
+
+## Factors
+A factor is like a character variable except that its unique values represent “levels” that have names but also have a numerical interpretation. The following commands are useful if x is a factor variable (a vector).
+```r
+x <- factor(c("a","b","b","a","c","b","a"))
+levels(x)                   # show the unique values of a factor variable
+droplevels(x)               # delete unused levels of a factor variable
+as.character(x)             # convert values of a factor to character strings instead
+as.numeric(as.character(x)) # convert numbers in "x" from factors to numeric type
+
+```
+
+## Logical data and comparisons
+Vectors can be assigned logical measurements, directly or as the result of a logical operation. Here’s an example of direct assignment. Logical operations can identify and select those vector elements for which a condition is TRUE. The comparison operations include
+```r
+z <- c(TRUE, TRUE, FALSE)  # put 3 logical values to a vector z
+ ==  (equal to)
+ !=  (not equal to)
+ <   (less than)
+ <=  (less than or equal to)
+ %in% (is an element of)
+
+```
+
+For example, put the following numbers into a vector z
+
+```{r}
+z <- c(2, -1, 3, 99, 8 )
+```
+
+The following logical operations and functions yield the results shown on the right
+```{r}
+z <= 3             # TRUE TRUE TRUE FALSE FALSE (for each element of z)
+!(z < 3)           # FALSE FALSE TRUE TRUE TRUE
+z[z != 3]          # 2 -1 99  8, the elements of z for which the condition is TRUE
+which(z <= 4)      # 4 5, the indices for elements of z satisfying the condition
+is.na(z)           # FALSE FALSE FALSE FALSE FALSE
+any(z < 0)         # TRUE
+all(z < 0)         # FALSE
+99 %in% z          # TRUE
+100 %in% z         # FALSE
+```
+
+The logical operators “&” and “|” refer to AND and OR. For example, put the following numbers into a vector z,
+```{r}
+z <- c(-10, -5, -1, 0, 3, 92)
+```
+
+The following operations yield the results shown on the right
+
+```{r}
+z < 0 & abs(z) < 5     # TRUE FALSE FALSE FALSE FALSE FALSE
+z[z < 0 | abs(z) < 5]  # -10  -5  -1  92
+
+```
+
+
+
+## Type checks
+
+These functions return TRUE or FALSE depending on the structure of x and its data type.
+```r
+x <- 1:3
+is.vector(x)
+is.character(x)
+is.numeric(x)
+is.integer(x)
+is.factor(x)
+```
+
+# 5. Combine vectors into a data frame
+
+Vectors representing different variables measured made on the same unit can be made into columns of a data frame. A data frame is a spreadsheet-like object containing a data set. See the “Data” tab for tips on working with data frames. Here we show how to make a data frame by combining vectors of the same length. The vectors need not be of the same data type.
+
+First, obtain your vectors. For example,
+
+```{r}
+quadrat <- 1:7
+site    <- c(1,1,2,3,3,4,5)
+species <- c("a","b","b","a","c","b","a")
+```
+
+Now combine them into a data frame named mydata.
+```{r}
+mydata <- data.frame(
+  quadrat = quadrat,
+  site = site,
+  species = species,
+  stringsAsFactors = FALSE
+)
+```
+
+The argument stringsAsFactors = FALSE is optional but recommended to preserve character data (otherwise character variables are converted to factors).
+You can accomplish the same job using the tibble command in the dplyr package (you’ll need to install the package if you have not already done so using install.packages()).
+
+```{r}
+# Using tibble (dplyr/ tibble package)
+library(dplyr)
+mydata_tb <- tibble(quadrat = quadrat, site = site, species = species)
+```
+
+
+## Missing values
+Missing values in R are indicated with NA.
+```{r}
+x <- c(1,2,3,4,5)
+x[5] <- NA
+x[x == -99] <- NA
+which(is.na(x))
+```
+
+Some functions will treat NA as valid entries. For example, the length of a vector (number of elements) includes missing values in the count.
+```{r}
+length(x)
+```
+
+Some functions won’t work on variables that include missing values unless default options are modified. For example, if you try to calculate the mean of a vector that contains missing values you will get NA as your result. Most functions have an option “na.rm” that ignores the missing values when calculating.
+
+```{r}
+mean(x)                # NA
+mean(x, na.rm = TRUE)  # ignore NAs
+
+#As usual, there’s more than one way to solve the problem. For example, you can create a new variable that contains only the non-missing values, but this requires an extra step so it not preferred:
+x1 <- na.omit(x)
+x1 <- x[complete.cases(x)]
+x1 <- x[!is.na(x)]
+length(x1)
+```
+
+# 6. Importing data into R
+
+## Working directories and projects
+
+```r
+getwd()             # see working directory
+# setwd("/path/to/folder")  # change it (prefer RStudio Projects instead)
+```
+
+Use **RStudio Projects** (*File → New Project*) to organize a folder that holds your data and scripts. Your working directory will be that folder when the project is open.
+
+## Read/write CSV
+
+```r
+# Base R
+# mydata <- read.csv(file.choose())    # interactive file picker
+# mydata <- read.csv("myfile.csv")
+
+# Handle spaces and blanks explicitly:
+# mydata <- read.csv("myfile.csv", strip.white = TRUE, na.strings = c("NA", ""))
+
+# readr (recommended)
+library(readr)
+# mydata <- read_csv("myfile.csv")    # smarter defaults
+```
+
+Write to CSV:
+
+```r
+# write.csv(mydata, file = "myfile_out.csv", row.names = FALSE)
+```
+
+# 7. Understanding your data frame
+
+## Variable types
+As it reads your data, R will classify your variables into types.
+•	Columns with only numbers are made into numeric or integer variables.
+•	Columns with even one non-numeric character will classify variable as character.
+To check on how R has classified all your variables, enter
+
+```{r}
+str(mydata)
+dplyr::glimpse(mydata)
+```
+
+To check on R’s classification of just one variable, x,
+```{r}
+class(mydata$site)
+is.character(mydata$species)
+is.integer(mydata$site)
+is.factor(mydata$species)
+```
+
+### Factors and level order
+A factor is a categorical variable whose categories represent levels. These levels have names, but they additionally have a numeric interpretation. If a variable A has 3 categories “a”, “b”, and “c”, R will order the levels alphabetically, by default, and give them the corresponding numerical interpretations 1, 2, and 3. This will determine the order that the categories appear in graphs and tables. You can always change the order of the levels. For example, if you want “c” to be first (e.g., because it refers to the control group), set the order as follows:
+
+```r
+A <- factor(c("c","a","b","a"))
+A <- factor(A, levels = c("c","a","b"))  # put "c" first
+```
+
+### Change variable type
+You can convert variables to a different type.
+
+```r
+mydata$species <- as.factor(mydata$species)                # character -> factor
+mydata$species_chr <- as.character(mydata$species)         # factor -> character
+mydata$species_num <- as.numeric(as.character(factor(c("1","2","3"))))
+```
+Always check the results of a conversion to make sure R did what you wanted.
+
+## Viewing data
+
+The following commands are useful for viewing aspects of a data frame.
+
+```r
+mydata                   # print whole data frame
+print(mydata, n = 5)     # first 5 rows (tibble prints nicely)
+head(mydata)
+tail(mydata)
+names(mydata)
+rownames(mydata)
+```
+
+## Frame-level helpers
+These functions are applied to the whole data frame.
+```r
+str(mydata)
+is.data.frame(mydata)
+ncol(mydata)
+nrow(mydata)
+names(mydata)[1] <- "quad"  # rename first variable
+rownames(mydata)
+```
+
+## Access columns/rows
+The columns of the data frame are vectors representing variables. They can be accessed several ways.
+```r
+mydata$site
+mydata[, 2]
+mydata[5, 2]
+
+dplyr::select(mydata, site)
+```
+
+## Transform a variable
+For example, here is how to log transform a variable named size.mm and save the result as a new variable named logsize in the data frame mydata (log yields the natural log, whereas the function log10 yields log base 10.)
+```r
+# base
+# mydata$logsize <- log(mydata$size.mm)
+
+# dplyr
+# mydata <- mutate(mydata, logsize = log(size.mm))
+```
+
+## Delete a variable
+For example, to delete the variable site from mydata, use
+```r
+# base
+# mydata$site <- NULL
+
+# dplyr
+# mydata <- select(mydata, -site)
+```
+
+## Extract subsets
+There are several ways.
+```r
+# by position
+newdata <- mydata[, c(2, 3)]
+newdata <- mydata[, -1]
+newdata <- mydata[1:3, 1:2]
+
+# by condition and names (base)
+# newdata <- mydata[mydata$sex == "f" & mydata$size.mm < 25, c("site","id","weight")]
+
+# subset helper
+# newdata <- subset(mydata, sex == "f" & size.mm < 25, select = c(site, id, weight))
+
+# dplyr verbs
+# rows
+# temp <- dplyr::filter(mydata, sex == "f")
+# columns
+# newdata <- dplyr::select(temp, site, id, weight)
+```
+
+## Sort / arrange rows
+To re-order the rows of a data frame mydata to correspond to the sorted order of one of its variables, say x, use
+```r
+# base
+# mydata.x <- mydata[order(mydata$x), ]
+
+# dplyr
+# mydata.x <- dplyr::arrange(mydata, x)
+```
+
+## Group and summarize (dplyr)
+
+Dplyr is particularly powerful for grouping and summarizing data frames. You can use group_by to divide your dataset into groups meaningful for analysis. 
+The most important grouped operation is a summary, which, if being used to calculate a single summary statistic, reduces the data frame to have a single row for each group. In dplyr, this operation is performed by summarize(), as shown by the following example, which computes the average x variable grouped by a y variable:
+
+
+```r
+# Example: average x by groups of y (toy example)
+# mydata.x <- mydata %>%
+#   group_by(y) %>%
+#   summarize(ave_x = mean(x, na.rm = TRUE))
+```
+
+> Explore more in the dplyr vignette: <https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html>
+
+***
+
+# 8. Exercise: Palmer Penguins
+
+Data from Dr. Kristen Gorman and the Palmer Station, Antarctica LTER.  
+Citation: Gorman KB, Williams TD, Fraser WR (2014) *Ecological Sexual Dimorphism and Environmental Variability within a Community of Antarctic Penguins (Genus Pygoscelis).* **PLoS ONE** 9(3): e90081. <https://doi.org/10.1371/journal.pone.0090081>
+
+We’ll use the `palmer_penguins.csv` 
+
+
+## Tasks
+
+1. **Read the data and load libraries.**
+
+2. **How many observations?**
+
+3. **How many columns?**
+
+4. **What are the variables?**
+
+5. **Use `$` to extract `body_mass_g` and report the 11th row.**
+
+6. **Average bill length of all penguins (ignore NAs).**
+
+7. **Maximum bill depth of all penguins (ignore NAs).**
+
+8. **How many different islands?**
+
+9. **Standard error of the mean (SEM) bill length.**
+
+10. **Create `flip_bill_ratio` = flipper length / bill length.**
+
+11. **Average body mass by species and island.**
+

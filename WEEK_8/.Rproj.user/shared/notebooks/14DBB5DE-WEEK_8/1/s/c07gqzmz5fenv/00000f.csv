@@ -1,0 +1,5 @@
+"0","    ggplot(data, aes(x = Easting, y = Northing, color = resid, size = abs(resid))) +"
+"0","      geom_point() +"
+"0","      scale_color_gradient2() +"
+"0","      theme_bw()"
+"0",""

@@ -1,0 +1,6 @@
+"0","data_2 <- data |>"
+"0","  group_by(island, species) |>"
+"0","  summarise(avg_body_mass = mean(body_mass_g, na.rm = TRUE))"
+"1","[38;5;252m`summarise()` has grouped output by 'island'. You can override using the `.groups` argument.[39m
+"
+"0","data_2"

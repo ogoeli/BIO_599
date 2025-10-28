@@ -1,0 +1,4 @@
+"0","levels(data_3$treatment)"
+"1","NULL
+"
+"0","data_3$treatment <- as.factor(data_3$treatment)"

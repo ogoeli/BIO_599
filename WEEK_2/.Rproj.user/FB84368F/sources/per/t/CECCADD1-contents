@@ -1,0 +1,185 @@
+---
+title: "WEEK_2"
+author: "OGONNA ELI"
+format: html
+editor: visual
+---
+
+### load data and library 
+
+```{r}
+library(tidyverse)
+
+data <- read.csv("sparrows.csv")
+data1 <- read.csv("michigan_trees.csv")
+##
+```
+
+### **Michigan trees**
+
+1.  Read in the Michigan tree species data (michigan_trees.csv).Examine the structure of the data and make any necessary changes. Hint: explore the levels of ‘species’
+
+    ```{r}
+    #read data structure 
+
+    str(data1)
+
+    ##explore the level of species
+    #table(data1$species)
+
+    ##make species a level/ factor data
+
+    data1$species  <- as.factor(data1$species)
+
+    ##confirm it worked
+    str(data1)
+
+    ```
+
+2.  We want to compare mean diameter at breast height (dbh) between each species. Assess visually whether DBH is normally distributed.
+
+    --DBH isn't normally distributed.
+
+    ```{r}
+
+    ##check if dbh is normally distributed
+
+    hist(data1$dbh)
+    ```
+
+<!-- -->
+
+1.  Are there outliers in DBH?
+
+    --Yes, a bunch of outliers.
+
+    ```{r}
+    boxplot(data1$dbh,
+            main = "Boxplot of Sparrow DBH",
+            ylab = "DBH (mm)",
+            xlab = "All Sparrows",
+            col = "lightblue",
+            border = "darkblue")
+    ```
+
+<!-- -->
+
+1.  Based on these plots, do you think an ANOVA is an appropriate test comparing average dbh in each species?
+
+    --No, the data does not meant the assumption of an ANOVA test.
+
+2.  Enter the following code: `m1 <- aov(dbh ~ species, data = data_name)` where data_name is the name of your data frame. You just performed an ANOVA.
+
+    ```{r}
+    m1 <- aov(dbh ~ species, data = data1)
+    ```
+
+<!-- -->
+
+1.  Plot the model residuals as a function of the fitted values (remember \~ from the lesson). Does it seem like our model fit the data?
+
+    ```{r}
+    hist(m1$residuals)
+    ```
+
+```{r}
+plot(m1$residuals ~ m1$fitted.values)
+```
+
+1.  Make a boxplot of residuals as a function of species.
+
+    ```{r}
+    boxplot(m1$residuals ~ m1$model$species)
+    ```
+
+### **Methane** 
+
+```{r}
+data <- read.csv("flux.csv")
+str(data)
+data$site <- as.factor(data$site)
+data$ecosystem.type <- as.factor(data$ecosystem.type)
+```
+
+2.  Is the response variable of flux normally distributed?
+
+    -- No, the data is skewed to the left.
+
+    ```{r}
+    data$flux <- as.numeric(data$flux)
+    hist(data$flux)
+    ```
+
+<!-- -->
+
+2.  Are there outliers in the response variable (flux) and the covariates (temp, latitude, longitude)?
+
+    --There are outliers in the response variable (flux) and also latitude, No outliers in the temperatures and longitude,
+
+    ```{r}
+    boxplot(data$flux)
+    data$temp <- as.numeric((data$temp))
+    boxplot(data$temp)
+    boxplot(data$latitude)
+    boxplot(data$longitude)
+    ```
+
+<!-- -->
+
+2.  Is there collinearity between temp, latitude, longitude, and ecosystem?
+
+    -- There is a colleranity between temp and latitude. as the latitude is going up, the temp is going down.
+
+    ```{r}
+    # Only numeric predictors
+    numeric_vars <- data[, c("temp", "latitude", "longitude")]
+
+    # Correlation matrix
+    cor(numeric_vars, use = "complete.obs")
+
+    # Visual
+    pairs(numeric_vars)
+
+    aggregate(cbind(temp, latitude, longitude) ~ ecosystem.type, data = data, mean)
+
+    ```
+
+<!-- -->
+
+2.  Are there equal variances in flux across different ecosystem types?
+
+    ```{r}
+    # Boxplot
+    boxplot(flux ~ ecosystem.type, data = data, main = "Flux by Ecosystem type")
+
+    # Levene's test (from car package)
+    library(car)
+    leveneTest(flux ~ ecosystem.type, data = data)
+
+    ```
+
+<!-- -->
+
+2.  Is the quality of the data good enough to allow for the interaction between temperature and ecosystem?
+
+    ```{r}
+    table(data$ecosystem.type)
+
+    ```
+
+2.  Do we have multiple observations per site? Are observations of the response variable independent.
+
+    -- The data have multiple samples per site. They might be correlated therefore, the assumption of independence is violated.
+
+    ```{r}
+    table(data$site)
+
+    #Check for autocorrelation in residuals if data are time-ordered
+    #acf(data$flux, main = "ACF of Model Residuals")
+    ```
+
+<!-- -->
+
+2.  Based on the data exploration what type of analysis would you recommend?
+
+    --GLM, since the assumptions of linear least regression were not meant (data is skewed, not independent etc)

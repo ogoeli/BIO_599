@@ -1,0 +1,1 @@
+"0","lm_3 <- lm(longevity.days~thorax.mm+treatment, data = data_3)"

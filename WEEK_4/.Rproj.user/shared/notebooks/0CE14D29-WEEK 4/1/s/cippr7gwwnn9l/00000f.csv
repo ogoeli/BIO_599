@@ -1,0 +1,2 @@
+"0","    # Compare variance structures with likelihood ratio tests"
+"0","    anova(gls_treat, gls_nutr, gls_inter)"

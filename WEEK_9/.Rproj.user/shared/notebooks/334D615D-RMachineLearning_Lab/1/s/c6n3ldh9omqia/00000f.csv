@@ -1,0 +1,8 @@
+"0","### Impute To Gapfill NAs in Predictor Datasets with K-Nearest Neighbor Imputation"
+"0","PreImputeKNN <- preProcess(flux[predictors],method=""knnImpute"",k=5)"
+"0","DataImputeKNN <- predict(PreImputeKNN, flux[predictors]) # Note: Standardizes the Data"
+"0","Rescale<- as.data.frame(t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)) #Convert back to original scale"
+"0","ImputeFlux<-cbind(flux[target],Rescale)"
+"0","rm(PreImputeKNN,DataImputeKNN,Rescale)"
+"0",""
+"0","vis_miss(ImputeFlux, warn_large_data = FALSE)"

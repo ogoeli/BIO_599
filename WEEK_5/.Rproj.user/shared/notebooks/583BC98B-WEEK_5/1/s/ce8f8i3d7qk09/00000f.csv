@@ -1,0 +1,12 @@
+"0",""
+"0","    lm_2 <- lme(narea ~ dfromtop * species, random = ~1|ID, data = data_2, method = ""REML"")"
+"0","    summary(lm_2)"
+"1","Linear mixed-effects model fit by "
+"1","REML
+"
+"1","  Data:"
+"1"," "
+"1","data_2"
+"1"," "
+"1","
+"

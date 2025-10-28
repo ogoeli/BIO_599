@@ -1,0 +1,95 @@
+---
+title: "Week1"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+# Exercise
+
+## Read the data from the file into a data frame and load any relevant libraries (e.g. ‘tidyr’)
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data <- read.csv("palmer_penguins.csv")
+```
+
+### How many observations does this data frame have?
+
+-   344 number of observation
+
+```{r}
+nrow(data)
+```
+
+### How many columns does this data frame have?
+
+-   8 columns
+
+```{r}
+ncol(data)
+```
+
+### What are the variables in penguins?
+
+```{r}
+colnames(data)
+```
+
+### Use \$ to extract the body_mass_g column and report the weight of the penguin in the 11th row.
+
+```{r}
+data$body_mass_g[11]
+```
+
+### What is the average bill length of all penguins?
+
+```{r}
+
+##take out rows with NA
+data_1 <- na.omit(data)
+mean(data_1$bill_length_mm)
+```
+
+### What is the maximum bill depth of all penguins?
+
+```{r}
+max(data_1$bill_depth_mm)
+```
+
+### How many different islands were penguins observed on?
+
+-   3 different island
+
+```{r}
+table(data$island)
+```
+
+### Calculate the standard error of the mean bill length. Remember, the standard error of the mean is calculated as the standard deviation of the data divided by the square root of sample size. To get sample size use length(z)
+
+```{r}
+sd_data <- sd(data_1$bill_length_mm)
+
+n <- length(data_1)
+
+sem <- sd_data/sqrt(n)
+sem
+```
+
+### Create a new variable that is the ratio of flipper to bill length and call the new variable flip_bill_ratio.
+
+```{r}
+data$flip_bill_ratio <- data$flipper_length_mm/data$bill_length_mm
+```
+
+### Make a new data frame that has the average body mass of each species of penguin on each island using group_by and summarize in dplyr.
+
+```{r}
+data_2 <- data |>
+  group_by(island, species) |>
+  summarise(avg_body_mass = mean(body_mass_g, na.rm = TRUE))
+data_2
+```

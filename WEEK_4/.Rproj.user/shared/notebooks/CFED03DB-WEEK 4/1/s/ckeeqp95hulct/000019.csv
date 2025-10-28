@@ -1,0 +1,2 @@
+"0","anova(gls_full, gls_no_inter)  # Likelihood ratio test for interaction"
+"2","Warning: fitted objects with different fixed effects. REML comparisons are not meaningful."

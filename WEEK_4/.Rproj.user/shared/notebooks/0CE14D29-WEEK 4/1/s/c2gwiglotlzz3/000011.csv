@@ -1,0 +1,4 @@
+"0",""
+"0","    # test two-ways sequentially (same pattern)"
+"0","    g_noTN <- update(g_no3way, . ~ . - Treatment:Nutrient)"
+"0","    anova(g_no3way, g_noTN)"

@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ogonna Eli">
+
+<title>Week_3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="WEEK_3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="WEEK_3_files/libs/quarto-html/quarto.js"></script>
+<script src="WEEK_3_files/libs/quarto-html/popper.min.js"></script>
+<script src="WEEK_3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="WEEK_3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="WEEK_3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="WEEK_3_files/libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="WEEK_3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="WEEK_3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="WEEK_3_files/libs/bootstrap/bootstrap-8a79a254b8e706d3c925cde0a310d4f0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Week_3</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ogonna Eli </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load your packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyverse' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'sjPlot' was built under R version 4.4.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'emmeans' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to emmeans.
+Caution: You lose important information if you filter this package's results.
+See '? untidy'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visreg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'visreg' was built under R version 4.4.3</code></pre>
+</div>
+</div>
+<section id="exercise-1" class="level1">
+<h1>Exercise 1</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data_1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"RIKZdat.csv"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X week exposure    NAP humus Beach Richness
+1 1    1       10  0.045  0.05     1       11
+2 2    1       10 -1.036  0.30     1       10
+3 3    1       10 -1.336  0.10     1       13
+4 4    1       10  0.616  0.15     1       11
+5 5    1       10 -0.684  0.05     1       10
+6 6    1        8  1.190  0.10     2        8</code></pre>
+</div>
+</div>
+<section id="create-a-scatter-plot-of-the-data.-choose-the-response-and-explanatory-variables-with-care-we-want-to-predict-richness-from-height-of-the-sample-above-sea-level." class="level5">
+<h5 class="anchored" data-anchor-id="create-a-scatter-plot-of-the-data.-choose-the-response-and-explanatory-variables-with-care-we-want-to-predict-richness-from-height-of-the-sample-above-sea-level."><strong>Create a scatter plot of the data. Choose the response and explanatory variables with care: we want to predict Richness from height of the sample above sea level.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">##plot of x and y</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data_1<span class="sc">$</span>NAP<span class="sc">~</span>data_1<span class="sc">$</span>Richness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-a-linear-model-to-the-data-with-species-richness-richness-as-the-response-variable-and-site-height-nap-as-the-predictor." class="level5">
+<h5 class="anchored" data-anchor-id="fit-a-linear-model-to-the-data-with-species-richness-richness-as-the-response-variable-and-site-height-nap-as-the-predictor."><strong>Fit a linear model to the data with species richness (Richness) as the response variable and site height (NAP) as the predictor.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lm_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>( data_1<span class="sc">$</span>Richness <span class="sc">~</span> data_1<span class="sc">$</span>NAP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="add-the-best-fit-line-to-the-scatter-plot.-does-the-relationship-appear-linear-from-the-scatter-plot-visually-check-for-any-serious-problems-such-as-outliers-or-changes-in-the-variance." class="level5">
+<h5 class="anchored" data-anchor-id="add-the-best-fit-line-to-the-scatter-plot.-does-the-relationship-appear-linear-from-the-scatter-plot-visually-check-for-any-serious-problems-such-as-outliers-or-changes-in-the-variance."><strong>Add the best-fit line to the scatter plot. Does the relationship appear linear? From the scatter plot, visually check for any serious problems such as outliers or changes in the variance.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_1, <span class="fu">aes</span>(<span class="at">x =</span> NAP, <span class="at">y =</span> Richness)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-the-same-fitted-model-object-obtain-the-estimates-for-the-coefficients-slope-and-intercept-standard-errors-and-95-confidence-intervals-for-the-slope-and-intercept.-what-is-the-r2-value-for-the-model-fit-hint-use-tab_model-function-from-the-sjplot-package." class="level5">
+<h5 class="anchored" data-anchor-id="using-the-same-fitted-model-object-obtain-the-estimates-for-the-coefficients-slope-and-intercept-standard-errors-and-95-confidence-intervals-for-the-slope-and-intercept.-what-is-the-r2-value-for-the-model-fit-hint-use-tab_model-function-from-the-sjplot-package."><strong>Using the same fitted model object, obtain the estimates for the coefficients, slope and intercept, standard errors, and 95% confidence intervals for the slope and intercept. What is the R2 value for the model fit? Hint: use tab_model function from the sjPlot package.</strong></h5>
+<ul>
+<li>R squared = 0.325 and Adjusted R squared = 0.309</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(lm_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Dependent variable</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.69</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.36&nbsp;–&nbsp;8.01</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">data 1$NAP</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-2.87</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-4.14&nbsp;–&nbsp;-1.59</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.325 / 0.309</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="test-the-fit-of-the-model-to-the-data-with-an-anova-table.-what-does-this-test-tell-us" class="level5">
+<h5 class="anchored" data-anchor-id="test-the-fit-of-the-model-to-the-data-with-an-anova-table.-what-does-this-test-tell-us"><strong>Test the fit of the model to the data with an ANOVA table. What does this test tell us?</strong></h5>
+<ul>
+<li>the model’s slope is not equal to 0. and the model is significant with p value &lt; than 0.05 and the null hypothesis can be rejected.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: data_1$Richness
+           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+data_1$NAP  1 357.53  357.53   20.66 4.418e-05 ***
+Residuals  43 744.12   17.31                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="recall-the-assumptions-of-linear-models.-do-the-data-conform-to-the-assumptions-are-there-any-potential-concerns-most-of-the-plots-will-be-self-explanatory-except-perhaps-the-last-one.-leverage-calculates-the-influence-that-each-data-point-has-on-the-estimated-parameters.-for-example-if-the-slope-changes-a-great-deal-when-a-point-is-removed-that-point-is-said-to-have-high-leverage.-cooks-distance-measures-the-effect-of-each-data-point-on-the-predicted-values-for-all-the-other-data-points.-a-value-greater-than-1-is-said-to-be-worrisome.-points-with-high-leverage-dont-necessarily-have-high-cooks-distance-and-vice-versa." class="level5">
+<h5 class="anchored" data-anchor-id="recall-the-assumptions-of-linear-models.-do-the-data-conform-to-the-assumptions-are-there-any-potential-concerns-most-of-the-plots-will-be-self-explanatory-except-perhaps-the-last-one.-leverage-calculates-the-influence-that-each-data-point-has-on-the-estimated-parameters.-for-example-if-the-slope-changes-a-great-deal-when-a-point-is-removed-that-point-is-said-to-have-high-leverage.-cooks-distance-measures-the-effect-of-each-data-point-on-the-predicted-values-for-all-the-other-data-points.-a-value-greater-than-1-is-said-to-be-worrisome.-points-with-high-leverage-dont-necessarily-have-high-cooks-distance-and-vice-versa."><strong>Recall the assumptions of linear models. Do the data conform to the assumptions? Are there any potential concerns? Most of the plots will be self-explanatory, except perhaps the last one. “Leverage” calculates the influence that each data point has on the estimated parameters. For example, if the slope changes a great deal when a point is removed, that point is said to have high leverage. “Cook’s distance” measures the effect of each data point on the predicted values for all the other data points. A value greater than 1 is said to be worrisome. Points with high leverage don’t necessarily have high Cook’s distance, and vice versa.</strong></h5>
+<ul>
+<li><p>The first plot for residual vs fitted value plot. it shows that some points are nonlinear.</p></li>
+<li><p>The second plot looks at the QQ plot. it assess the normality of residuals. the residuals are normally distributed so all the points lays on the line with just few outliers.</p></li>
+<li></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#par(mfrow = c(2, 2))</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="exercise-2-one-categorical-variable" class="level1">
+<h1><strong>Exercise #2: One categorical variable</strong></h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#read the data</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>data_2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"knees.csv"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treatment shift
+1   control  0.20
+2   control  0.53
+3   control -0.68
+4   control -0.37
+5   control -0.64
+6   control  0.36</code></pre>
+</div>
+</div>
+<section id="plot-the-phase-shift-data-showing-the-individual-data-points-in-each-treatment-group." class="level5">
+<h5 class="anchored" data-anchor-id="plot-the-phase-shift-data-showing-the-individual-data-points-in-each-treatment-group."><strong>Plot the phase shift data, showing the individual data points in each treatment group.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_2, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="determine-whether-the-categorical-variable-treatment-is-a-factor.-if-not-a-factor-convert-treatment-to-a-factor-using-the-factor-command.-this-will-be-convenient-when-we-fit-the-linear-model." class="level5">
+<h5 class="anchored" data-anchor-id="determine-whether-the-categorical-variable-treatment-is-a-factor.-if-not-a-factor-convert-treatment-to-a-factor-using-the-factor-command.-this-will-be-convenient-when-we-fit-the-linear-model."><strong>Determine whether the categorical variable “treatment” is a factor. If not a factor, convert treatment to a factor using the factor() command. This will be convenient when we fit the linear model.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(data_2<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>data_2<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_2<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="use-the-levels-command-on-the-factor-variable-treatment-to-see-how-r-has-ordered-the-different-treatment-groups.-the-order-will-be-alphabetical-by-default.-conveniently-you-will-find-that-the-control-group-is-listed-first-in-the-alphabetical-sequence.-as-you-are-about-to-analyze-these-data-with-a-linear-model-in-r-can-you-think-of-why-having-the-control-group-first-in-the-order-is-convenient" class="level5">
+<h5 class="anchored" data-anchor-id="use-the-levels-command-on-the-factor-variable-treatment-to-see-how-r-has-ordered-the-different-treatment-groups.-the-order-will-be-alphabetical-by-default.-conveniently-you-will-find-that-the-control-group-is-listed-first-in-the-alphabetical-sequence.-as-you-are-about-to-analyze-these-data-with-a-linear-model-in-r-can-you-think-of-why-having-the-control-group-first-in-the-order-is-convenient"><strong>Use the levels() command on the factor variable “treatment” to see how R has ordered the different treatment groups. The order will be alphabetical, by default. Conveniently, you will find that the control group is listed first in the alphabetical sequence. (As you are about to analyze these data with a linear model in R, can you think of why having the control group first in the order is convenient?)</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(data_2<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "control" "eyes"    "knee"   </code></pre>
+</div>
+</div>
+</section>
+<section id="to-get-practice-change-the-order-of-the-levels-so-that-the-knee-treatment-group-is-second-in-the-order-after-control-and-the-eyes-group-is-listed-third." class="level5">
+<h5 class="anchored" data-anchor-id="to-get-practice-change-the-order-of-the-levels-so-that-the-knee-treatment-group-is-second-in-the-order-after-control-and-the-eyes-group-is-listed-third."><strong>To get practice, change the order of the levels so that the “knee” treatment group is second in the order, after “control”, and the “eyes” group is listed third.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>data_2<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">factor</span>(data_2<span class="sc">$</span>treatment, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"knee"</span>, <span class="st">"eyes"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-the-phase-shift-data-again-to-see-the-result." class="level5">
+<h5 class="anchored" data-anchor-id="plot-the-phase-shift-data-again-to-see-the-result."><strong>Plot the phase shift data again to see the result.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_2, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-a-linear-model-to-the-light-treatment-data.-store-the-output-in-an-lm-object." class="level5">
+<h5 class="anchored" data-anchor-id="fit-a-linear-model-to-the-light-treatment-data.-store-the-output-in-an-lm-object."><strong>Fit a linear model to the light treatment data. Store the output in an lm() object.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>lm_2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(shift <span class="sc">~</span> treatment, <span class="at">data =</span> data_2)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(lm_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">shift</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.31</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.83&nbsp;–&nbsp;0.21</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.230</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [knee]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.03</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.79&nbsp;–&nbsp;0.74</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.942</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [eyes]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.24</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-2.01&nbsp;–&nbsp;-0.48</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.003</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.434 / 0.375</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="create-a-graphic-that-illustrates-the-fit-of-the-model-to-the-data.-in-other-words-include-the-predicted-fitted-values-to-your-plot." class="level5">
+<h5 class="anchored" data-anchor-id="create-a-graphic-that-illustrates-the-fit-of-the-model-to-the-data.-in-other-words-include-the-predicted-fitted-values-to-your-plot."><strong>Create a graphic that illustrates the fit of the model to the data. In other words, include the predicted (fitted) values to your plot.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> lm_2<span class="sc">$</span>fitted.values</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot observed data</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data_2<span class="sc">$</span>treatment, data_2<span class="sc">$</span>phase_shift,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Observed vs Fitted Phase Shift"</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Treatment"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Phase Shift"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add fitted values as red points (slightly offset for visibility)</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(data_2<span class="sc">$</span>treatment, fit, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">17</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a legend</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, <span class="st">"Fitted"</span>),</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"red"</span>), <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">17</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="check-whether-the-assumptions-of-linear-models-are-met-in-this-case.-examine-the-plots.-are-there." class="level5">
+<h5 class="anchored" data-anchor-id="check-whether-the-assumptions-of-linear-models-are-met-in-this-case.-examine-the-plots.-are-there."><strong>Check whether the assumptions of linear models are met in this case. Examine the plots. Are there.</strong></h5>
+<ul>
+<li><p>plot one doesn’t meet the assumption of colleniality.</p></li>
+<li><p>QQ plot shows normality of residuals.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-17-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-the-lm-model-object-obtain-the-parameter-estimates-coefficients-along-with-standard-errors.-examine-the-parameter-estimates.-if-youve-done-the-analysis-correctly-you-should-see-the-three-coefficients.-rounded-they-are--0.309--0.027-and--1.24.-what-do-each-of-these-coefficients-represent-what-is-being-estimated-by-each-value-note-that-the-output-will-also-include-an-r2-value.-this-is-loosely-interpretable-as-the-percent-of-the-variance-in-phase-shift-that-is-explained-by-treatment." class="level5">
+<h5 class="anchored" data-anchor-id="using-the-lm-model-object-obtain-the-parameter-estimates-coefficients-along-with-standard-errors.-examine-the-parameter-estimates.-if-youve-done-the-analysis-correctly-you-should-see-the-three-coefficients.-rounded-they-are--0.309--0.027-and--1.24.-what-do-each-of-these-coefficients-represent-what-is-being-estimated-by-each-value-note-that-the-output-will-also-include-an-r2-value.-this-is-loosely-interpretable-as-the-percent-of-the-variance-in-phase-shift-that-is-explained-by-treatment."><strong>Using the lm() model object, obtain the parameter estimates (coefficients) along with standard errors. Examine the parameter estimates. If you’ve done the analysis correctly, you should see the three coefficients. Rounded, they are -0.309, -0.027, and -1.24. What do each of these coefficients represent – what is being estimated by each value? Note that the output will also include an R2 value. This is loosely interpretable as the “percent of the variance in phase shift that is explained by treatment.”</strong></h5>
+<ul>
+<li><p>The intercept of -0.31 shows that at 0 increase in our control group, there is a -0.31 change in treatment.</p></li>
+<li><p>the slope of knee and eyes shows that for every 1 unit of change in the treatment, there is an expected shift of -0.03 and -1.24.</p></li>
+</ul>
+</section>
+<section id="the-p-values-associated-with-the-three-coefficients-are-generally-invalid.-why-under-what-circumstance-might-one-of-the-p-values-be-valid" class="level5">
+<h5 class="anchored" data-anchor-id="the-p-values-associated-with-the-three-coefficients-are-generally-invalid.-why-under-what-circumstance-might-one-of-the-p-values-be-valid"><strong>The P-values associated with the three coefficients are generally invalid. Why? Under what circumstance might one of the P-values be valid?</strong></h5>
+<ul>
+<li>I think because one out of two treatment isn’t significant?</li>
+</ul>
+</section>
+<section id="obtain-95-confidence-intervals-for-the-three-parameters." class="level5">
+<h5 class="anchored" data-anchor-id="obtain-95-confidence-intervals-for-the-three-parameters."><strong>Obtain 95% confidence intervals for the three parameters.</strong></h5>
+<ul>
+<li><p>-0.83- 0.21</p></li>
+<li><p>-0.79 - 0.74</p></li>
+<li><p>-2.01 - -0.48</p></li>
+</ul>
+</section>
+<section id="test-the-effect-of-light-treatment-on-phase-shift-with-an-anova-table." class="level5">
+<h5 class="anchored" data-anchor-id="test-the-effect-of-light-treatment-on-phase-shift-with-an-anova-table."><strong>Test the effect of light treatment on phase shift with an ANOVA table.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: shift
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+treatment  2 7.2245  3.6122  7.2894 0.004472 **
+Residuals 19 9.4153  0.4955                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="produce-a-table-of-the-treatment-means-using-the-fitted-model-object-along-with-standard-errors-and-confidence-intervals.-hint-use-the-emmenas-package.-now-calculate-the-means-and-ses-separately-on-the-data-from-each-treatment-group.-when-would-you-expect-these-values-to-be-the-same-or-different" class="level5">
+<h5 class="anchored" data-anchor-id="produce-a-table-of-the-treatment-means-using-the-fitted-model-object-along-with-standard-errors-and-confidence-intervals.-hint-use-the-emmenas-package.-now-calculate-the-means-and-ses-separately-on-the-data-from-each-treatment-group.-when-would-you-expect-these-values-to-be-the-same-or-different"><strong>Produce a table of the treatment means using the fitted model object, along with standard errors and confidence intervals. Hint: use the emmenas package. Now, calculate the means and SE’s separately on the data from each treatment group. When would you expect these values to be the same or different?</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get estimated marginal means (EMMs)</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>emmeans_lm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(lm_2, <span class="sc">~</span> treatment)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show means, standard errors, and 95% confidence intervals</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(emmeans_lm, <span class="at">infer =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> treatment emmean    SE df lower.CL upper.CL t.ratio p.value
+ control   -0.309 0.249 19   -0.830    0.212  -1.241  0.2299
+ knee      -0.336 0.266 19   -0.893    0.221  -1.262  0.2223
+ eyes      -1.551 0.266 19   -2.108   -0.995  -5.831  &lt;.0001
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+</section>
+<section id="exercise-3-one-categorical-and-one-continuous-variable" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-3-one-categorical-and-one-continuous-variable"><strong>Exercise #3: One categorical and one continuous variable</strong></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>data_3 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"fruitflies.csv"</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Npartners          treatment longevity.days thorax.mm
+1         8 8 pregnant females             35      0.64
+2         8 8 pregnant females             37      0.68
+3         8 8 pregnant females             49      0.68
+4         8 8 pregnant females             46      0.72
+5         8 8 pregnant females             63      0.72
+6         8 8 pregnant females             39      0.76</code></pre>
+</div>
+</div>
+<section id="determine-whether-the-categorical-variable-treatment-is-a-factor.-if-not-a-factor-convert-treatment-to-a-factor.-this-will-be-convenient-when-we-fit-the-linear-model." class="level5">
+<h5 class="anchored" data-anchor-id="determine-whether-the-categorical-variable-treatment-is-a-factor.-if-not-a-factor-convert-treatment-to-a-factor.-this-will-be-convenient-when-we-fit-the-linear-model."><strong>Determine whether the categorical variable “treatment” is a factor. If not a factor, convert treatment to a factor. This will be convenient when we fit the linear model.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(data_3<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>data_3<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_3<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="use-the-levels-command-on-the-factor-variable-treatment-to-see-how-r-has-ordered-the-different-treatment-groups-should-be-alphabetically." class="level5">
+<h5 class="anchored" data-anchor-id="use-the-levels-command-on-the-factor-variable-treatment-to-see-how-r-has-ordered-the-different-treatment-groups-should-be-alphabetically."><strong>Use the levels() command on the factor variable “treatment” to see how R has ordered the different treatment groups (should be alphabetically).</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(data_3<span class="sc">$</span>treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1 pregnant female"  "1 virgin female"    "8 pregnant females"
+[4] "8 virgin females"   "no females added"  </code></pre>
+</div>
+</div>
+</section>
+<section id="change-the-order-of-the-categories-so-that-a-sensible-control-group-is-first-in-the-order-of-categories.-arrange-the-order-of-the-remaining-categories-as-you-see-fit." class="level5">
+<h5 class="anchored" data-anchor-id="change-the-order-of-the-categories-so-that-a-sensible-control-group-is-first-in-the-order-of-categories.-arrange-the-order-of-the-remaining-categories-as-you-see-fit."><strong>Change the order of the categories so that a sensible control group is first in the order of categories. Arrange the order of the remaining categories as you see fit.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>data_3<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">factor</span>(data_3<span class="sc">$</span>treatment, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"no females added"</span>,<span class="st">"1 virgin female"</span>,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="st">"1 pregnant female"</span>,<span class="st">"8 virgin females"</span>,<span class="st">"8 pregnant females"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-a-scatter-plot-with-longevity-as-the-response-variable-and-body-size-thorax-length-as-the-explanatory-variable.-use-a-single-plot-with-different-symbols-and-colors-too-if-you-like-for-different-treatment-groups.-or-make-a-multipanel-plot-using-the-ggplot2-package." class="level5">
+<h5 class="anchored" data-anchor-id="create-a-scatter-plot-with-longevity-as-the-response-variable-and-body-size-thorax-length-as-the-explanatory-variable.-use-a-single-plot-with-different-symbols-and-colors-too-if-you-like-for-different-treatment-groups.-or-make-a-multipanel-plot-using-the-ggplot2-package."><strong>Create a scatter plot, with longevity as the response variable and body size (thorax length) as the explanatory variable. Use a single plot with different symbols (and colors too, if you like) for different treatment groups. Or make a multipanel plot using the ggplot2 package.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_3, <span class="fu">aes</span>(<span class="at">x =</span> thorax.mm, <span class="at">y =</span> longevity.days, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">color =</span> treatment, <span class="at">shape =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Longevity vs Body Size by Treatment"</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Thorax Length"</span>,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Longevity"</span>) <span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)  <span class="co"># optional, nice color palette</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-a-linear-model-to-the-fly-data-including-both-body-size-thorax-length-and-treatment-as-explanatory-variables.-place-thorax-length-before-treatment-in-the-model-formula.-leave-out-the-interaction-term-for-now-well-assume-for-now-that-there-is-no-interaction-between-the-explanatory-variables-thorax-and-treatment." class="level5">
+<h5 class="anchored" data-anchor-id="fit-a-linear-model-to-the-fly-data-including-both-body-size-thorax-length-and-treatment-as-explanatory-variables.-place-thorax-length-before-treatment-in-the-model-formula.-leave-out-the-interaction-term-for-now-well-assume-for-now-that-there-is-no-interaction-between-the-explanatory-variables-thorax-and-treatment."><strong>Fit a linear model to the fly data, including both body size (thorax length) and treatment as explanatory variables. Place thorax length before treatment in the model formula. Leave out the interaction term for now – we’ll assume for now that there is no interaction between the explanatory variables thorax and treatment.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>lm_3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(longevity.days<span class="sc">~</span>thorax.mm<span class="sc">+</span>treatment, <span class="at">data =</span> data_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="check-whether-the-assumptions-of-linear-models-are-met-in-this-case.-are-there-any-potential-concerns-if-you-have-done-the-analysis-correctly-you-will-see-that-the-variance-of-the-residuals-is-not-constant-but-increases-with-increasing-fitted-values.-this-violates-the-linear-model-assumption-of-equal-variance-of-residuals." class="level5">
+<h5 class="anchored" data-anchor-id="check-whether-the-assumptions-of-linear-models-are-met-in-this-case.-are-there-any-potential-concerns-if-you-have-done-the-analysis-correctly-you-will-see-that-the-variance-of-the-residuals-is-not-constant-but-increases-with-increasing-fitted-values.-this-violates-the-linear-model-assumption-of-equal-variance-of-residuals."><strong>Check whether the assumptions of linear models are met in this case. Are there any potential concerns? If you have done the analysis correctly, you will see that the variance of the residuals is not constant, but increases with increasing fitted values. This violates the linear model assumption of equal variance of residuals.</strong></h5>
+<ul>
+<li>QQ plot shows that the residual are normaly distributed but the other plots doesnt meet the model assumption.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-26-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-26-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="attempt-to-fix-the-problem-identified-in-step-2-using-a-log-transformation-of-the-response-variable.-refit-the-model-and-reapply-the-graphical-diagnostic-tools-to-check-assumptions.-any-improvements-to-my-eye-the-situation-is-improved-but-the-issue-has-not-gone-away-entirely.-lets-continue-anyway-with-the-log-transformed-analysis." class="level5">
+<h5 class="anchored" data-anchor-id="attempt-to-fix-the-problem-identified-in-step-2-using-a-log-transformation-of-the-response-variable.-refit-the-model-and-reapply-the-graphical-diagnostic-tools-to-check-assumptions.-any-improvements-to-my-eye-the-situation-is-improved-but-the-issue-has-not-gone-away-entirely.-lets-continue-anyway-with-the-log-transformed-analysis."><strong>Attempt to fix the problem identified in step (2) using a log-transformation of the response variable. Refit the model and reapply the graphical diagnostic tools to check assumptions. Any improvements? (To my eye the situation is improved but the issue has not gone away entirely.) Let’s continue anyway with the log-transformed analysis.</strong></h5>
+<ul>
+<li>The model improved after transforming the response variable.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>data_3<span class="sc">$</span>longevity.days <span class="ot">&lt;-</span> <span class="fu">log</span>(data_3<span class="sc">$</span>longevity.days)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>lm_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(data_3<span class="sc">$</span>longevity.days<span class="sc">~</span>data_3<span class="sc">$</span>thorax.mm<span class="sc">+</span>data_3<span class="sc">$</span>treatment)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-27-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-27-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualize-the-fit-of-the-model-to-the-data-using-the-visreg-or-ggeffects-package.-try-two-different-possibilities.-in-the-first-plot-the-fit-of-the-response-variable-to-thorax-length-separately-for-each-treatment-group.-in-the-second-plot-the-fit-of-the-data-to-treatment-conditioning-on-the-value-of-the-covariate-thorax-length." class="level5">
+<h5 class="anchored" data-anchor-id="visualize-the-fit-of-the-model-to-the-data-using-the-visreg-or-ggeffects-package.-try-two-different-possibilities.-in-the-first-plot-the-fit-of-the-response-variable-to-thorax-length-separately-for-each-treatment-group.-in-the-second-plot-the-fit-of-the-data-to-treatment-conditioning-on-the-value-of-the-covariate-thorax-length."><strong>Visualize the fit of the model to the data using the visreg or ggeffects package. Try two different possibilities. In the first, plot the fit of the response variable to thorax length separately for each treatment group. In the second, plot the fit of the data to treatment, conditioning on the value of the covariate (thorax length).</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">visreg</span>(lm_3, <span class="st">"thorax.mm"</span>, <span class="at">by =</span> <span class="st">"treatment"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WEEK_3_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="obtain-95-confidence-intervals-for-the-treatment-and-slope-parameters.-obtain-the-parameter-estimates-and-standard-errors-for-the-fitted-model.-interpret-the-parameter-estimates.-what-do-they-represent-which-treatment-group-differs-most-from-the-control-group" class="level5">
+<h5 class="anchored" data-anchor-id="obtain-95-confidence-intervals-for-the-treatment-and-slope-parameters.-obtain-the-parameter-estimates-and-standard-errors-for-the-fitted-model.-interpret-the-parameter-estimates.-what-do-they-represent-which-treatment-group-differs-most-from-the-control-group"><strong>Obtain 95% confidence intervals for the treatment and slope parameters. Obtain the parameter estimates and standard errors for the fitted model. Interpret the parameter estimates. What do they represent*? Which treatment group differs most from the control group?</strong></h5>
+<ul>
+<li>The parameter estimates represent the <strong>predicted change in longevity relative to the control group</strong>, holding thorax length constant; the slope for <code>thorax.mm</code> shows how longevity increases with body size, and among treatments, the <strong>“8 virgin females”</strong> group differs most from the control, showing the largest and statistically significant decrease in longevity.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(lm_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %     97.5 %
+(Intercept)                 -70.991818 -28.976720
+thorax.mm                   111.187996 160.449011
+treatment1 virgin female    -12.903620  -1.131000
+treatment1 pregnant female   -3.239237   8.544262
+treatment8 virgin females   -25.903124 -13.997944
+treatment8 pregnant females  -2.004729   9.862494</code></pre>
+</div>
+</div>
+</section>
+<section id="test-overall-treatment-effects-with-an-anova-table.-interpret-each-significance-test-what-exactly-is-being-tested" class="level5">
+<h5 class="anchored" data-anchor-id="test-overall-treatment-effects-with-an-anova-table.-interpret-each-significance-test-what-exactly-is-being-tested"><strong>Test overall treatment effects with an ANOVA table. Interpret each significance test – what exactly is being tested?</strong></h5>
+<ul>
+<li><p>I understand that its testing just thorax and treatment but it doesnt take into account the different treatment group.</p></li>
+<li><p>Both thorax length and treatment significantly influence longevity, and the ANOVA for treatment gives a valid overall test of differences among groups rather than just comparing to a reference level.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: longevity.days
+           Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+thorax.mm   1 15496.6 15496.6 140.293 &lt; 2.2e-16 ***
+treatment   4  9611.5  2402.9  21.753 1.719e-13 ***
+Residuals 119 13144.7   110.5                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="refit-the-model-to-the-data-but-this-time-reverse-the-order-in-which-you-entered-the-two-explanatory-variables-in-the-model.-test-the-treatment-effects-with-an-anova-table.-why-isnt-the-table-identical-to-the-one-from-your-analysis-in-6" class="level5">
+<h5 class="anchored" data-anchor-id="refit-the-model-to-the-data-but-this-time-reverse-the-order-in-which-you-entered-the-two-explanatory-variables-in-the-model.-test-the-treatment-effects-with-an-anova-table.-why-isnt-the-table-identical-to-the-one-from-your-analysis-in-6"><strong>Refit the model to the data but this time reverse the order in which you entered the two explanatory variables in the model. Test the treatment effects with an ANOVA table. Why isn’t the table identical to the one from your analysis in 6?</strong></h5>
+<ul>
+<li>The order changes the sequential sums of squares and F-values because <strong>treatment and thorax length are somewhat correlated</strong>, so the variation attributed to each depends on which is tested first.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>lm_4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(longevity.days <span class="sc">~</span> treatment <span class="sc">+</span> thorax.mm, <span class="at">data =</span> data_3)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: longevity.days
+           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+treatment   4 5.1809  1.2952  34.918 &lt; 2.2e-16 ***
+thorax.mm   1 5.3946  5.3946 145.435 &lt; 2.2e-16 ***
+Residuals 119 4.4141  0.0371                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="our-analysis-so-far-has-assumed-that-the-regression-slopes-for-different-treatment-groups-are-the-same.-is-this-a-valid-assumption-we-have-the-opportunity-to-investigate-just-how-different-the-estimated-slopes-really-are.-to-do-this-fit-a-new-linear-model-to-the-data-but-this-time-include-an-interaction-term-between-the-explanatory-variables." class="level5">
+<h5 class="anchored" data-anchor-id="our-analysis-so-far-has-assumed-that-the-regression-slopes-for-different-treatment-groups-are-the-same.-is-this-a-valid-assumption-we-have-the-opportunity-to-investigate-just-how-different-the-estimated-slopes-really-are.-to-do-this-fit-a-new-linear-model-to-the-data-but-this-time-include-an-interaction-term-between-the-explanatory-variables."><strong>Our analysis so far has assumed that the regression slopes for different treatment groups are the same. Is this a valid assumption? We have the opportunity to investigate just how different the estimated slopes really are. To do this, fit a new linear model to the data, but this time include an interaction term between the explanatory variables.</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear model with interaction</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>lm_interact <span class="ot">&lt;-</span> <span class="fu">lm</span>(longevity.days <span class="sc">~</span> thorax.mm <span class="sc">*</span> treatment, <span class="at">data =</span> data_3)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View summary</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_interact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = longevity.days ~ thorax.mm * treatment, data = data_3)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.49803 -0.13805 -0.01007  0.13659  0.40127 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                            2.14427    0.38830   5.522 2.11e-07 ***
+thorax.mm                              2.36253    0.46223   5.111 1.29e-06 ***
+treatment1 virgin female              -0.57478    0.60502  -0.950  0.34410    
+treatment1 pregnant female             0.24139    0.60327   0.400  0.68980    
+treatment8 virgin females             -1.54650    0.55725  -2.775  0.00644 ** 
+treatment8 pregnant females           -0.09877    0.54796  -0.180  0.85727    
+thorax.mm:treatment1 virgin female     0.53903    0.72002   0.749  0.45561    
+thorax.mm:treatment1 pregnant female  -0.23422    0.72405  -0.323  0.74691    
+thorax.mm:treatment8 virgin females    1.39291    0.67896   2.052  0.04249 *  
+thorax.mm:treatment8 pregnant females  0.21230    0.66464   0.319  0.74998    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1908 on 115 degrees of freedom
+Multiple R-squared:  0.7207,    Adjusted R-squared:  0.6988 
+F-statistic: 32.97 on 9 and 115 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(lm_interact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">longevity.days</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.14</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.38&nbsp;–&nbsp;2.91</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">thorax mm</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.36</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.45&nbsp;–&nbsp;3.28</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [1 virgin<br>
+female]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.57</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.77&nbsp;–&nbsp;0.62</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.344</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [1 pregnant<br>
+female]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.24</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.95&nbsp;–&nbsp;1.44</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.690</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [8 virgin<br>
+females]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.55</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-2.65&nbsp;–&nbsp;-0.44</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.006</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">treatment [8 pregnant<br>
+females]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.10</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.18&nbsp;–&nbsp;0.99</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.857</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">thorax mm × treatment [1<br>
+virgin female]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.54</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.89&nbsp;–&nbsp;1.97</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.456</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">thorax mm × treatment [1<br>
+pregnant female]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.23</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.67&nbsp;–&nbsp;1.20</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.747</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">thorax mm × treatment [8<br>
+virgin females]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.39</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.05&nbsp;–&nbsp;2.74</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.042</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">thorax mm × treatment [8<br>
+pregnant females]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.21</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.10&nbsp;–&nbsp;1.53</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.750</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.721 / 0.699</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="another-way-to-help-assess-whether-the-assumption-of-no-interaction-is-a-sensible-one-for-these-data-is-to-determine-whether-the-fit-of-the-model-is-better-when-an-interaction-term-is-present-or-not-and-by-how-much.-we-will-learn-new-methods-later-in-the-course-to-determine-this-but-in-the-meantime-a-simple-measure-of-model-fit-can-be-obtained-using-the-adjusted-r2-value.-the-ordinary-r2-measures-the-fraction-of-the-total-variation-in-the-response-variable-that-is-explained-by-the-explanatory-variables.-this-however-cannot-be-compared-between-models-that-differ-in-the-number-of-parameters-because-fitting-more-parameters-always-results-in-a-larger-r2-even-if-the-added-variables-are-just-made-up-random-numbers.-to-compare-the-fit-of-models-having-different-parameters-use-the-adjusted-r2-value-instead-which-takes-account-of-the-number-of-parameters-being-fitted.-use-the-summary-command-on-each-of-two-fitted-models-one-with-and-the-other-without-an-interaction-term-and-compare-their-adjusted-r2-values.-are-they-much-different-if-not-then-maybe-it-is-ok-to-assume-that-any-interaction-term-is-likely-small-and-can-be-left-out." class="level5">
+<h5 class="anchored" data-anchor-id="another-way-to-help-assess-whether-the-assumption-of-no-interaction-is-a-sensible-one-for-these-data-is-to-determine-whether-the-fit-of-the-model-is-better-when-an-interaction-term-is-present-or-not-and-by-how-much.-we-will-learn-new-methods-later-in-the-course-to-determine-this-but-in-the-meantime-a-simple-measure-of-model-fit-can-be-obtained-using-the-adjusted-r2-value.-the-ordinary-r2-measures-the-fraction-of-the-total-variation-in-the-response-variable-that-is-explained-by-the-explanatory-variables.-this-however-cannot-be-compared-between-models-that-differ-in-the-number-of-parameters-because-fitting-more-parameters-always-results-in-a-larger-r2-even-if-the-added-variables-are-just-made-up-random-numbers.-to-compare-the-fit-of-models-having-different-parameters-use-the-adjusted-r2-value-instead-which-takes-account-of-the-number-of-parameters-being-fitted.-use-the-summary-command-on-each-of-two-fitted-models-one-with-and-the-other-without-an-interaction-term-and-compare-their-adjusted-r2-values.-are-they-much-different-if-not-then-maybe-it-is-ok-to-assume-that-any-interaction-term-is-likely-small-and-can-be-left-out."><strong>Another way to help assess whether the assumption of no interaction is a sensible one for these data is to determine whether the fit of the model is “better” when an interaction term is present or not, and by how much. We will learn new methods later in the course to determine this, but in the meantime a simple measure of model fit can be obtained using the adjusted R2 value. The ordinary R2 measures the fraction of the total variation in the response variable that is “explained” by the explanatory variables. This, however, cannot be compared between models that differ in the number of parameters because fitting more parameters always results in a larger R2, even if the added variables are just made-up random numbers. To compare the fit of models having different parameters, use the adjusted R2 value instead, which takes account of the number of parameters being fitted. Use the summary() command on each of two fitted models, one with and the other without an interaction term, and compare their adjusted R2 values. Are they much different? If not, then maybe it is OK to assume that any interaction term is likely small and can be left out.</strong></h5>
+<ul>
+<li>The interaction term did improve the R squared adjusted by 0.2</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_3)<span class="sc">$</span>adj.r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6419357</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_interact)<span class="sc">$</span>adj.r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6988301</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

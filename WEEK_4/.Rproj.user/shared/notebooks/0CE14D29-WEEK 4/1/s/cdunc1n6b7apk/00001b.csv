@@ -1,0 +1,6 @@
+"0",""
+"0","    # 2. Residuals vs Treatment"
+"0","    plot(data_2$Treatment, residuals_lm,"
+"0","         xlab = ""Treatment"","
+"0","         ylab = ""Residuals"","
+"0","         main = ""Residuals vs Treatment"")"

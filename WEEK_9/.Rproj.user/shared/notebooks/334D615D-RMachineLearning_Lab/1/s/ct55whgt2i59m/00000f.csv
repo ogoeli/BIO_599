@@ -1,0 +1,5 @@
+"0","plot(NEE~TIMESTAMP_END, "
+"0","     data = flux, "
+"0","     col = 'cornflowerblue', "
+"0","     xlab = '', "
+"0","     ylab = expression(paste(""NEE ("", mu, ""mol CO2 m-2 s-1)"")))"

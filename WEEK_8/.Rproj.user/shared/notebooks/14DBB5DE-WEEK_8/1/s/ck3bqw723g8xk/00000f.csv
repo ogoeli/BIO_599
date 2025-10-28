@@ -1,0 +1,3 @@
+"0","    #The nlme package includes a built-in Variogram() function to plot these."
+"0","    vario_bor <- Variogram(ph_gls, form = ~ Easting + Northing, resType = ""normalized"")"
+"0","    plot(vario_bor)"

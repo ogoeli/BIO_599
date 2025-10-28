@@ -1,0 +1,3 @@
+"0","flux$TIMESTAMP_END<-as.POSIXct(as.character(flux$TIMESTAMP_END), "
+"0","                               tz=""EST"","
+"0","                               format = ""%Y-%m-%d %H:%M:%S"")"

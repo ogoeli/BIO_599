@@ -1,0 +1,6 @@
+"0","    data_2$log_depth_mean_day <- log(data_2$depth_mean_day)"
+"0","    ggplot(data_2, aes(x = log_depth_mean_day, y = Temperature_1m, color = fish)) +"
+"0","      geom_point() +"
+"0","      geom_line() +"
+"0","      theme_bw() +"
+"0","      labs(title = ""Fish abundance by depth and Temperature"")"

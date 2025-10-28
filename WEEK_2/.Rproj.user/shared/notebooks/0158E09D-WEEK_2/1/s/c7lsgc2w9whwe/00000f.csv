@@ -1,0 +1,4 @@
+"0",""
+"0","    ##check if dbh is normally distributed"
+"0",""
+"0","    hist(data1$dbh)"

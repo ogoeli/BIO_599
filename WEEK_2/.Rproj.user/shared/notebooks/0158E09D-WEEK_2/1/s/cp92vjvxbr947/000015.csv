@@ -1,0 +1,2 @@
+"0","    # Boxplot"
+"0","    boxplot(flux ~ ecosystem.type, data = data, main = ""Flux by Ecosystem type"")"

@@ -1,0 +1,3 @@
+"0",""
+"0","# Add fitted values as red points (slightly offset for visibility)"
+"0","points(data_2$treatment, fit, col = ""red"", pch = 17)"

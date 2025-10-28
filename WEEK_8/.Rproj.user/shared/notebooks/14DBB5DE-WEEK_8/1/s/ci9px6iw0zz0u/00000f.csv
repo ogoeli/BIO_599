@@ -1,0 +1,4 @@
+"0","    #AR(1) structure"
+"0",""
+"0","    fish_ar1 <- update(m1,"
+"0","                        correlation = corAR1(form = ~ date))"

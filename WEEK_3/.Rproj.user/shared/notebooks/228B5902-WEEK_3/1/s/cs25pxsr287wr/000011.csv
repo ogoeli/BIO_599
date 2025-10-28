@@ -1,0 +1,4 @@
+"0","#read the data"
+"0",""
+"0","data_2 <- read.csv(""knees.csv"")"
+"0","head(data_2)"

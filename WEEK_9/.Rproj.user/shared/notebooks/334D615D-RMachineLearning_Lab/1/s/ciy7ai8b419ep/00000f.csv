@@ -1,0 +1,3 @@
+"0","partitionIndex <- createDataPartition(y=Impute$NEE,p=0.6,list=FALSE,times=1) #Create the index of 'keeps'"
+"0","training <- Impute[partitionIndex,] # Convert 'keeps' to Training"
+"0","testing  <- Impute[-partitionIndex,] # The Rest to Testing"

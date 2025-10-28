@@ -1,0 +1,4 @@
+"0","    ggplot(sub, aes(x = TF, y = DBH)) +"
+"0","      geom_point()+"
+"0","      geom_smooth(method = ""lm"", color = ""black"") +"
+"0","      theme_bw()"

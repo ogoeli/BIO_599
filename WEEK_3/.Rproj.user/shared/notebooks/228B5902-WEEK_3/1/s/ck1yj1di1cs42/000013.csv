@@ -1,0 +1,4 @@
+"0",""
+"0","# Add a legend"
+"0","legend(""topright"", legend = c(""Observed"", ""Fitted""),"
+"0","       col = c(""blue"", ""red""), pch = c(16, 17))"

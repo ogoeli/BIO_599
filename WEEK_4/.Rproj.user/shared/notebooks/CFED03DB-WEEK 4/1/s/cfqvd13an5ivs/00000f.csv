@@ -1,0 +1,4 @@
+"0","    anova(lm_1, varpow)"
+"2","Error in anova.lmlist(object, ...) : 
+  'list' object cannot be coerced to type 'double'
+"

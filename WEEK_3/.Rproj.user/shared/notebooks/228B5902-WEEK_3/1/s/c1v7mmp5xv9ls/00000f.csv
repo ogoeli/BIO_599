@@ -1,0 +1,4 @@
+"0","data_3$longevity.days <- log(data_3$longevity.days)"
+"0",""
+"0","lm_log <- lm(data_3$longevity.days~data_3$thorax.mm+data_3$treatment)"
+"0","plot(lm_log)"

@@ -1,0 +1,1 @@
+"0","    m1 <- aov(dbh ~ species, data = data1)"

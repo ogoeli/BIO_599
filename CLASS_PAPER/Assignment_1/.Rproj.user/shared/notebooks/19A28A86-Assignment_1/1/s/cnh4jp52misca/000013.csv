@@ -1,0 +1,6 @@
+"0","# Load libraries"
+"0","library(tidyverse)"
+"0","library(GGally)"
+"2","Warning:"
+"2"," package ‘GGally’ was built under R version 4.4.3
+"

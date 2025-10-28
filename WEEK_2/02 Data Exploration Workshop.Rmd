@@ -1,0 +1,347 @@
+---
+title: "02 Workshop Data Exploration"
+author: "Xanthe Walker"
+date: "08-01-2025"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this workshop, we will examine graphical and statistical methods for data exploration and testing assumptions. We follow the recommendations of Zuur et al., 2010. A protocol for data exploration to avoid common statistical problems. Methods in Ecology and Evolution 1, 3–14.
+
+# 1. Key Steps
+
+### 1. Outliers Y & X
+<ul>
+<li>Outliers in response variable vs in covariates – to be dealt with differently</li>
+<li>Transformation less desirable for response variable than in covariates?</li>
+</ul>
+
+### 2. Homogeneity Y
+
+### 3. Normality Y
+<ul>
+<li>Example of importance of biological intuition and graphical investigation</li>
+<li>Fig 5b – transformation to get normality not desirable</li>
+</ul>
+
+### 4. Zero trouble Y
+<ul>
+<li>Zero-inflated GLM</li>
+<li>Double zeros, or joint absences – what do they mean? e.g., spatial clumping</li>
+<li>Multivariate analysis that ignores double zeros</li>
+</ul>
+
+### 5. Collinearity X
+<ul>
+<li>VIF of 10, 3, or 2 – reason for these values?</li>
+<li>VIFs, or common sense or biological knowledge</li>
+</ul>
+
+### 6. Relationships Y & X
+<ul>
+<li>Multi-panel scatter plots for checking for outliers</li>
+</ul>
+
+### 7. Interactions
+<ul>
+<li>Are data balanced? Use coplot (Fig 11).</li>
+</ul>
+
+### 8. Independence Y
+<ul>
+<li>Mixed effects, etc. to deal with non-independence</li>
+<li>ACF or variograms for checking for temporal and spatial non-independence</li>
+</ul>
+
+## Reminders
+<ol>
+<li>Not all steps are always needed</li>
+<li>Data exploration is a very different, and separate, process from hypothesis testing. Models and hypotheses should be based on your understanding of your study system, not on ‘data dredging’ looking for patterns.</li>
+<li>We emphasize the visual inspection of the data and model, rather than an over-reliance on statistical tests of the assumptions. We covered some statistical tests for normality and homogeneity in class, but the statistical literature warns against them, and I recommend visual inspection.</li>
+</ol>
+
+Note: In this workshop, we use simple model outputs (lm(), aov()) only to support residual and assumption checks. You are not expected to interpret these models in detail yet—we will cover model building next week.
+
+We will use the sparrow dataset. The dataset is called <code>sparrows</code>.
+
+```{r}
+sparrows <- read.csv("../../Data files/sparrows.csv")
+head(sparrows)
+```
+
+You can see 10 columns with morphometric information on 979 individual sparrows from females and males of two species.
+
+
+### Are there outliers in Y and X?
+
+An outlier is an observation or data point that is ‘abnormally’ high or low compared to the other data. It may indicate real variation or experimental, observation, and/or data entry errors. As such, the definition of what constitutes an outlier is subjective.
+
+Different techniques respond to and treat outliers differently. For some analyses, outliers make no difference; for others they may bias the results and conclusions.
+
+The classic graph for looking at outliers is the boxplot, which we have seen before. Make a simple boxplot of sparrow wing length, ‘sparrows$Wing’.
+
+```{r}
+boxplot(sparrows$Wing,
+        main = "Boxplot of Sparrow Wing Length",
+        ylab = "Wing Length (mm)",
+        xlab = "All Sparrows",
+        col = "lightblue",
+        border = "darkblue")
+```
+
+The bold line in the middle of the box indicates the median, the lower end of the box is the 25% quartile, the upper end of the box is the 75% quartile. The ‘hinge’ is the 75% quartile minus the 25% quartile. The lines (or whiskers) indicate 1.5 times the size of the hinge. (Note that the interval defined by these lines is not a confidence interval.) Points beyond these lines are (often wrongly) considered to be outliers.
+
+In this case, the boxplot is suggesting to us that there may be at least 6 outliers.
+Boxplots provide a summary of the data. Another (and potentially better) approach is to present the raw data. We can use the basic plot() function to do this. Use plot() to display the wing measurements.
+
+```{r}
+plot(sparrows$Wing)
+```
+
+As usual, running plot() on a numeric vector creates a plot showing each data point as an open circle, displayed in the order they occur in the vector (indicated by the x-axis, labelled Index).
+
+This plot is a version of the ‘Cleveland dotplot’, the row number (i.e., index) of an observation is plotted vs. the observation value.
+
+R has the function dotchart() to do this better than our simple use ofplot(). Rundotchart() on the same sparrow wing data.
+
+```{r}
+dotchart(sparrows$Wing)
+```
+
+Here the function has rotated the plot, compared to before. The data are organized by index on the y-axis and the values are indicated on the x-axis. We also see vertical grey lines that make it easier to compare the horizontal position of each point.
+
+This dotplot suggests that there may in fact be fewer than 6 outliers. A nice feature of this function is that we can condition the continuous variable on other factors in the data, using the argument ‘group =’.
+Create a dotchart of the sparrow wing data, grouped by species.
+
+```{r}
+names(sparrows)
+sparrows1=na.omit(sparrows)
+dotchart(sparrows1$Wing, group = factor(sparrows1$Species))
+```
+
+Now we can see that most of the ‘outliers’ in fact belong to the species ‘SESP’ and appear much more within the expected range of the data. There is only one value from the ‘SSTS’ species that appears abnormally high.
+
+What you then do with any outliers depends. If there are no data entry errors, you could check for other explanatory factors, transform the data, or drop the sample with the outlier, depending on the sensitivity of the analysis. Be careful how you treat outliers - ethically removing points of data because they don’t fit your expectation requires strong justification.
+
+
+### Do we have homogeneity of variance?
+
+Homogeneity of variance is an important assumption in analysis of variance (ANOVA), other regression-related models and some multivariate techniques. Violation of constant variance across groups makes it hard to estimate the standard deviation of the coefficient estimates.
+
+In ANOVA, we can check the variance by making conditional boxplots for each group. Make a boxplot of Wing conditional on Species and Sex. We can do this by:
+
+```{r}
+boxplot(Wing ~ Sex:Species, data = sparrows)
+```
+
+To perform this model as an ANOVA, the variation in the observations from the sexes should be similar, as should the variation in the observations from the species. In this case, there seems to be less variation in females of SSTS than females of SESP. Larger differences would be more worrying.
+
+To verify that variances are homogeneous in regression-type models with continuous predictors, we should use the residuals (i.e., the differences between the observed values and the estimated values) of the model. 
+
+We will cover linear regression in more detail next week but for now type in the following formula
+
+```{r}
+m <- lm(sparrows$Wing ~ sparrows$Sex + sparrows$Species)
+#Type ‘m’ to look at the model coefficients.
+m
+```
+
+Now type ‘str(m)’ to look at the model structure and see how we can extract the residuals.
+```{r, results="hide"}
+str(m)
+```
+
+There is a lot in there and I have chose not to print it in this tutorial, but you should see it in R! If you scroll up to the top and you will see $ residuals   : Named num [1:979] 0.197 .... Extract (subset) this part of m as a vector. Remember that m, the model output, is a list.
+```{r}
+#m$residuals
+```
+Now that you can get at the residuals, we can use a similar method to extract the fitted (i.e., predicted) values. Use these two vectors to make a plot of residuals as a function of fitted values of the model m, to check for variation in the variance, within a call to plot(). Use the ~ notation as we did in the boxplot and linear model for your plot formula.
+
+```{r}
+plot(m$residuals ~ m$fitted.values)
+```
+ 
+The residuals look to be ok, there is no great widening or narrowing of the distribution as we move along the x-axis. (There is one large residual up top, though). When assessing equal variance, we want to see a relatively homogenous cloud of points. We don’t want to see any structure in this cloud - the most common is when variance is greater at one end of your data’s range than another, giving a conical shape to your residuals.
+
+For any categorical predictors in the model, we would make boxplots of the residuals conditional on these factors, as above.
+
+For those who really want it, you can run a Bartlett’s test for equality of variances with the function `bartlett.test().
+
+To resolve inhomogenous variance, you either have to transform the response variable, or use an approach that does not require homogeneity of variance (e.g., generalised least squares).
+
+
+### Are the data normally distributed?
+
+Many statistical techniques assume that the data are normally distributed, including linear regression and t-tests. Violations of normality create problems for determining whether model coefficients are significantly different from zero and for calculating confidence intervals. Normality is not required for estimating the values of the coefficients themselves (although outliers may do …).
+
+We can examine the normality of data by plotting a histogram. Plot a basic histogram of sparrow weight.
+```{r}
+hist(sparrows$Weight)
+```
+
+The distribution is slightly skewed, with more lower values than higher values. For a test such as a t-test, all we can do to assess normality is plot the raw data. For a regression, we should again be checking the residuals. Plot a histogram of the residuals from the model ‘m’.
+```{r}
+hist(m$residuals)
+```
+These look better! Less skewed.
+
+Another graphical tool for examining normality is the normal probability plot or normal quantile plot of the residuals. We use the function qqnorm() to generate this plot. The residuals should fall more or less along a straight line. Make a qq plot of the residuals from the model m.
+```{r}
+qqnorm(m$residuals)
+#It can be helpful to see a reference diagonal. Add the line by typing
+qqline(m$residuals)
+```
+A normal distribution is indicated by the points lying close to the diagonal reference line. A bow-shaped pattern of deviations from the diagonal indicates that the residuals have excessive skewness (i.e., they are not symmetrically distributed, with too many large errors in one direction). An S-shaped pattern of deviations indicates that the residuals have excessive kurtosis (i.e., there are either too many or two few large errors in both directions).
+
+If you really need a p-value for your decision, you can use a Shapiro-Wilk test: `shapiro.test(). Run this test on the residuals of our model.
+```{r}
+shapiro.test(m$residuals)
+```
+The p-value in this case indicates that our distribution is significantly different from a normal distribution. Realistically, this will nearly always be the case, making the test somewhat unhelpful. Examining model fit through residuals will give you a better idea as to whether the distribution of your data is a problem.
+
+For further reading on the issue of statistical tests of normality, see Zuur et al. 2010, Laasa 2009, and this link. As you may realise, real data with perfect Normal errors are extremely rare.
+
+#### Are there lots of zeros in the data?
+When working with count data (e.g., number of bugs on a leaf), it is common to have zeros. In some cases, one can have a lot of zeros. Such ‘zero-inflated’ data is problematical to analyze, and will require either a two-step approach first modelling the zeros and non-zeros using a binomial generalized linear model, and then only the non-zeros likely with a Poisson glm; or using a zero-inflated glm which essentially does these two steps at once. 
+
+You can use the frequency histogram of the raw data to assess the number of zeros in your data. 
+```{r}
+# Example: simulate zero-inflated count data
+zi_data <- rpois(1000, lambda = 0.5)
+hist(zi_data, main = "Zero-inflated Poisson Distribution", xlab = "Counts")
+```
+You can also check for zeros in a dataset
+```{r}
+table(sparrows$Weight == 0)
+```
+
+
+### Collinearity X?
+Collinearity is the existence of correlation between covariates (the various predictor variables in your model). For example, weight and height are often tightly correlated, as are levels of soil nutrients. If collinear variables are all in the model, it is hard for the model to determine which variables are significant.
+
+We can check for collinearity quickly with the plot() function again. Running plot() on a dataframe will generate a matrix of small plots, with each variable plotted against each other variable. The pairs() function does a similar thing. Run plot() on the sparrow dataset.
+```{r}
+plot(sparrows)
+```
+
+You may need to expand the plotting window to interpret the output. Collinearity will show itself as an obvious relationship between two predictors. In this data set, nearly all of the anatomical variables are collinear, which makes sense. Because of this, you would need to take caution using more than one of these variables as predictors in a model, as they represent essentially the same thing (overall body size).
+
+We can also look at variance inflation factors to assess collinearity of predictors in our model. We will cover linear regression in more detail next week but for now type in the following multiple linear regression formula:
+```{r}
+m <- lm(sparrows$Wing ~ sparrows$Head + sparrows$Tarsus + sparrows$Weight)
+```
+
+A different and easier way of writing this model is
+```{r}
+m <- lm(data=sparrows, Wing ~ Head + Tarsus + Weight)
+```
+
+There are many different packages and functions available for calculating variance inflation factors. We will use the car package as it can also deal with mixed effects model. Load the ‘car’ package and use the function
+```{r}
+library(car)
+vif(m)
+```
+Although these VIFs are all below the cutoff of 3, it is worth exploring the pairsplot and thinking carefully about what variables should or should not be included in your model. 
+
+
+### Relationships Y & X
+Scatterplots are essential tools to visualize any type of patterns or associations between two variables. Obviously there are several ways in which variables can be associated. The data points may describe positive or negative linear relationships, a parabola, or a complex oscillating pattern. Or we may assume that there is no relationship at all because all the points are randomly scattered.
+
+Use the following code to make a simple scatterplot with a fitted line based on a simple linear regression. Note that you can also use a smoothing function instead of a linear fit using the function ‘loess’ instead of ‘lm’
+
+```{r}
+plot(data=sparrows, Wing~Tarsus)
+M.loess <- lm(Wing~Tarsus, data = sparrows)
+Fit <- fitted(M.loess)
+head(Fit)
+lines(x = sparrows$Tarsus, y = Fit)
+```
+
+
+### Interactions
+An important concept often encountered when building up statistical models is interactions. We talk about interaction if the y–x relationship changes depending on z.  We use data visualisation tools to check whether we can apply models with interaction terms; is the quality of the data good enough to include them?
+
+Maybe you have reason to believe that the relationship between wingspan and weight is different between female and male birds. We can use the coplot function to explore this:
+```{r}
+coplot(Wing ~ Weight | Sex,
+       data = sparrows,
+       panel = function(x, y, ...) {
+         tmp <- lm(y ~ x, na.action = na.omit)
+         abline(tmp)
+         points(x, y) })
+```
+
+You can immediately see that there is a potential interaction, and that sample size is not an issue. All panels show a reasonably good number of observations. 
+
+#### Are observations of the response variable independent?
+A critical assumption of most statistical techniques is that observations are independent of one another. This assumption means that the value of any one data point is not influenced by the values of other data points, after the effects of the predictor variables have been taken into account.
+
+What this means in practice, is that for data that we know are likely to be highly auto-correlated, such as time-series, repeated measures, or data with strong spatial structure such as tree growth or survival in a plot, we may or may not need to account for this structure in the model.
+
+Auto-correlation refers to the tendency for observations close in space or time to be similar (i.e. to be correlated with one another).
+
+It may be that the predictors we have in the model account for the auto-correlation and we do not need a explicit spatial or temporal model.
+
+As with Normality and heterogeneity of variance, we can check the residuals of the model for evidence of autocorrelation in space or time (or phylogeny, or …).
+
+```{r}
+#Check for autocorrelation in residuals if data are time-ordered
+acf(m$residuals, main = "ACF of Model Residuals")
+```
+
+If your dataset contains repeated measures (e.g., multiple observations from the same site or individual), you may need to account for grouping structure using mixed-effects models or generalized least squares, which we will cover later in the course.
+
+Great, now you have some idea of how to explore data and test the assumptions of various statistical approaches.
+
+
+## EXERCISES
+### Michigan trees
+
+1.	Read in the Michigan tree species data (michigan_trees.csv).Examine the structure of the data and make any necessary changes. Hint: explore the levels of 'species'
+
+
+2.	We want to compare mean diameter at breast height (dbh) between each species. Assess visually whether DBH is normally distributed.
+
+3.	Are there outliers in DBH?
+
+4.	Assess visually whether there is equal variance in DBH between each species.
+
+5.	Based on these plots, do you think an ANOVA is an appropriate test comparing average dbh in each species?
+
+6.	Enter the following code: ` m1 <- aov(dbh ~ species, data = data_name)` where data_name is the name of your data frame. You just performed an ANOVA.
+
+7.	Plot the model residuals as a function of the fitted values (remember ~ from the 
+lesson). Does it seem like our model fit the data?
+
+8.	Make a boxplot of residuals as a function of species. 
+
+
+### Methane
+
+Methane (CH4), along with carbon dioxide (CO2), ozone (O3), and nitrous oxide (NO), constitutes an important greenhouse gas that seriously affects the temperature of the planet. It has been suggested that atmospheric CH4 emissions have contributed to approximately 20% of Earth’s warming since pre-industrial times, raising concerns about how the climate could be affected. It is therefore important to comprehend how CH4 emissions from different ecosystems will respond to expected increases in global temperature.
+
+We want to quantify how CH4 fluxes are influenced by temperature and ecosystem type. The database (flux.csv) consists of 1,431 measurements of CH4 emission and temperature, measured seasonally at 127 field sites worldwide and including wetlands, rice paddies, and aquatic ecosystems.
+
+1. Read in the data (flux.csv), examine the structure, and change variable types as needed. 
+
+Use data exploration techniques to address the following questions:
+
+2. Is the response variable of flux normally distributed? 
+
+3.	Are there outliers in the response variable (flux) and the covariates (temp, latitude, longitude)?
+
+4.	Is there collinearity between temp, latitude, longitude, and ecosystem?
+
+5.	Are there equal variances in flux across different ecosystem types?
+
+6.	Is the quality of the data good enough to allow for the interaction between temperature and ecosystem?
+
+7.	Do we have multiple observations per site? Are observations of the response variable independent
+
+8.	Based on the data exploration what type of analysis would you recommend?
+

@@ -1,0 +1,7 @@
+"0",""
+"0","    # 3. Residuals vs Nutrient"
+"0","    plot(data_2$Nutrient, residuals_lm,"
+"0","         xlab = ""Nutrient"","
+"0","         ylab = ""Residuals"","
+"0","         main = ""Residuals vs Nutrient"")"
+"0",""

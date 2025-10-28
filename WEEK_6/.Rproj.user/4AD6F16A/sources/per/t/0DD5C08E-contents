@@ -1,0 +1,242 @@
+---
+title: "WEEK 6"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+## **Maryland Biological Stream Survey**
+
+We are interested in exploring the relationship between abundance of longnose dace and chemical and biological characteristics of the streams in which they were counted.
+
+**Predictors in the dataset include:**
+
+-   **stream**: name of each sampled stream (i.e., the name associated with each case)
+
+-   **longnosedace**: number of longnose dace (*Rhinichthys cataractae*) per 75-meter section of stream
+
+-   **acreage**: area (in acres) drained by the stream
+
+-   **do2**: dissolved oxygen (mg/liter)
+
+-   **maxdepth**: maximum depth (cm) of the 75-meter segment of stream
+
+-   **no3**: nitrate concentration (mg/liter)
+
+-   **so4**: sulfate concentration (mg/liter)
+
+-   **temp**: water temperature on the sampling date (°C)
+
+### **Read in the dataset**
+
+```{r}
+
+library(tidyverse)
+library(nlme)
+library(MASS)
+library(MuMIn)
+library(performance)
+
+```
+
+```{r}
+df <- read.csv("longnosedace.csv")
+```
+
+1.  <div>
+
+    ### **Fit a model containing all predictor variables (except `stream`)**
+
+    </div>
+
+    -   Scale the predictors in the model
+
+    -   Using estimated coefficients and SEs, comment on:
+
+        1.  Statistical significance (evidence coefficients ≠ 0)
+
+        2.  Potential biological significance (magnitude of estimated effects)
+
+    -   Assume assumptions are met for now
+
+    -   The relationship is significant overall (P value \<0.05) but some variables aren't significant. the area drained by the stream (acreage) and nitrate concentration are the variables that have a significant impact on number of longnose dace. so the higher the area drained and the higher the no3 concentration the higher the number of longnose dace.
+
+    ```{r}
+
+    #scale the predictors
+    df$z_acreage <- scale(df$acreage)
+    df$z_do2 <- scale(df$do2)
+    df$z_maxdepth <- scale(df$maxdepth)
+    df$z_no3 <- scale(df$no3)
+    df$z_so4 <- scale(df$so4)
+    df$z_temp <- scale(df$temp)
+
+    lm1 <- lm(longnosedace ~ z_acreage + z_do2 + z_maxdepth + z_no3 + z_so4 + z_temp, data = df)
+
+    summary(lm1)
+    ```
+
+2.  <div>
+
+    ### **Find the optimal fixed effects structure**
+
+    </div>
+
+    -   Use log-likelihood ratio tests (LRT) to compare reduced models against the full model
+
+    -   Identify the minimum adequate model
+
+    -   Based on lower AIC, the model without the random effect by the stream is the best performing model. since adding the random effect doesnt improve the model, we will find the optimal fixed effects from the full model without any random effect. The minimum adequate model is the area drained, the max depth, no3. so these variables are the ones mostly adequate to explain our response.
+
+    ```{r}
+
+
+    ##fit a gls model to compare the model selection result with.
+    gls1 <- gls(longnosedace ~ z_acreage + z_do2 + z_maxdepth + z_no3 + z_so4 + z_temp, data = df)
+    summary(gls1)
+
+    #We add stream as a random intercept to account for species being grouped by stream
+    lme1 <- lme(longnosedace ~ z_acreage + z_do2 + z_maxdepth + z_no3 + z_so4 + z_temp,
+                random = ~ 1 | stream,
+                data = df,
+                method = "REML")
+    #summary(lme1)
+
+    #Compare models using maximum likelihood to see if adding random effects improves fit.
+    gls1_ml <- update(gls1, method = "ML")
+    lme1_ml <- update(lme1, method = "ML")
+    #anova(gls1_ml, lme1_ml)
+
+    ##since addint the random effect doesnt improve the model, we will find the optimal fixed effects from the full model without any random effect
+    lme1_ml <- update(gls1, method = "ML")
+    drop1(lme1_ml, test = "Chisq")
+
+    #fit the better model
+    fit_model_LRT <-  gls(longnosedace ~ z_acreage +  z_maxdepth + z_no3 , data = df)
+    summary(fit_model_LRT)
+    ```
+
+3.  <div>
+
+    ### **Use `stepAIC` to find the “best” model**
+
+    </div>
+
+    -   Compare results with those from LRT-based selection
+
+    -   PS: StepAIC favors variablesthat makes the model AIC go up which is what the model doesn't want. so if it takes out so4, it goes down to 704; which is what the model wants. so it takes it out, same for do2. these variables lower the AIC which is good, so they're taken out. but other variables when taken out increases the AIC therefore, they are left in since the step AIC tries to keep the lower AIC with fewer variables.
+
+    -   The two model have the same variable, max depth, no3 and acreage.
+
+    ```{r}
+    step_model <- stepAIC(lme1_ml, direction = "backward")
+    summary(step_model)
+    ```
+
+4.  <div>
+
+    ### **Fit the model chosen by `stepAIC`**
+
+    </div>
+
+    -   Inspect coefficients and statistical significance
+
+    ```{r}
+    #fit the better model
+    fit_model_StepAIC <-  gls(longnosedace ~ z_acreage +  z_maxdepth + z_no3 , data = df)
+    summary(fit_model_StepAIC)
+    ```
+
+5.  <div>
+
+    ###  **Fit all possible models**
+
+    </div>
+
+    -   Use `dredge()` to consider all combinations of predictors
+
+    -   Is there a clear “best” model based on AIC?
+
+    -   It did put out a lot of result. yes, acreage, no3 and max depth are among the top 2 performing model.
+
+    ```{r}
+    # Generate all subsets of the full ML model
+    all_models <- dredge(gls1_ml)
+
+    # View the top models
+    all_models
+    ```
+
+6.  <div>
+
+    ###  **Model averaging (ΔAIC \< 4)**
+
+    </div>
+
+    -   Average coefficients across models within 4 AIC units of the best model
+
+    ```{r}
+    # Average only models within delta < 4
+    avg_model <- model.avg(all_models, subset = delta < 4)
+    summary(avg_model)
+
+    #fit the better model
+    fit_model_dredge <-  gls(longnosedace ~ z_acreage +   z_no3 , data = df)
+    summary(fit_model_dredge)
+    ```
+
+7.  <div>
+
+    ###  **95% confidence set of models**
+
+    </div>
+
+    -   Use cumulative weight ≤ 0.95 to identify the set of models in the “confidence set”
+
+    -   I think the models with the highest weight? I have a bit issue with understanding the question.
+
+8.  <div>
+
+    ### **Model-averaged coefficients for the confidence set**
+
+    </div>
+
+    -   Average coefficients across models in the 95% confidence set
+
+    -   Interpret “full” vs “conditional” averages
+
+    -   **Full average**: Assigns 0 to predictors not present in a given model before averaging — shrinks weak parameters toward zero (more conservative; recommended for interpretation).
+
+    -   **Conditional average**: Averages only across models where the predictor is included — can give larger effect sizes for predictors with low support.
+
+    -   **full average** is used to assess importance of predictors.
+
+    -   **conditional average** is use to report effect size when included.
+
+    ```{r}
+    # Average only models within delta < 4
+    avg_model <- model.avg(all_models, subset = delta < 4)
+    summary(avg_model)
+
+    ```
+
+9.  <div>
+
+    ###  **Cross-validation of the best model**
+
+    </div>
+
+    -   Perform k-fold CV on the best model from `dredge()`
+
+    -   Compare CV R² and RMSE to in-sample values from `lm()`
+
+    -   Note: If using `performance`, scale predictors in the dataset before modeling (don’t use `scale()` in the formula)
+
+    -   i compared the fitted model from dredge and gls with the variables each model selected. The R2 and RMSE from the model selected from full average in dredge is 0.011 and 38 respectively. and the R2 and RMSE from the lm model is 0.28 and 39.835 respectively. using the k fold reduced the error but the performance dropped.
+
+    ```{r}
+    performance(fit_model_dredge)
+    set.seed(123)
+    performance_cv(fit_model_dredge, method = "k_fold", k = 5, stack = FALSE)
+    performance(fit_model_LRT)
+    ```

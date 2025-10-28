@@ -1,0 +1,29 @@
+"0","      "
+"0",""
+"0","    # Extract the prediction data frame"
+"0","    pred.mm <- ggpredict(lm_2, terms = c(""dfromtop"", ""species""))  # this gives overall predictions for the model"
+"0","    head(pred.mm)"
+"1","[34m# Predicted values of narea
+
+[39m"
+"1","[31mspecies: Pinus ponderosa[39m
+
+dfromtop | Predicted |     95% CI
+---------------------------------
+       0 |      1.99 | 1.77, 2.21
+       5 |      1.83 | 1.64, 2.02
+      10 |      1.67 | 1.43, 1.91
+
+[31mspecies: Pinus monticola[39m
+
+dfromtop | Predicted |     95% CI
+---------------------------------
+       0 |      3.56 | 3.36, 3.75
+       5 |      3.28 | 3.08, 3.49
+      10 |      3.01 | 2.73, 3.30
+[33m
+Adjusted for:
+* ID = 0 (population-level)[39m"
+"1","
+"
+"0","    plot(pred.mm)"

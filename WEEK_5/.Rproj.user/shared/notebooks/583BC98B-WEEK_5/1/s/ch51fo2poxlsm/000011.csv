@@ -1,0 +1,2 @@
+"0","    ggplot(data_2, aes(y = narea, x = dfromtop, color = species)) +"
+"0","      geom_point()"
