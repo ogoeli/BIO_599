@@ -1,0 +1,210 @@
+---
+title: "WEEK 10"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(car)
+library(performance)
+```
+
+1.  <div>
+
+    ## **Butterfly color**
+
+    </div>
+
+    Mayekar et al (2017) studied some potential determinants of color (green vs brown) of a tropical butterfly species. A laboratory population was established, and newly hatched larvae were placed in a growth chamber set at either 60% or 85% relative humidity. Resulting pupae were recorded for colour, time to pupation, pupal weight and sex.
+
+    We will use their data to model green vs brown pupae against the two continuous predictors (time to pupation, pupal weight) and the one categorical predictor (sex). We will only use data from the low humidity treatment as brown pupae were very uncommon at high humidity.
+
+    Mayekar, H. V. & Kodandaramaiah, U. (2017). Pupal colour plasticity in a tropical butterfly, *Mycalesis mineus* (Nymphalidae: Satyrinae). *PLoS One*, 12, e0171482.
+
+    The paper is [here](https://doi.org/10.1371/journal.pone.0171482), and Figure 1 is an excellent image of the divergent colour phenotypes.
+
+    **Coding notes:** - `colnum`: binary variable coded as 0 = brown pupae, 1 = green pupae - `sex`: categorical factor with two levels (male/female) - `timepup`, `weight`: continuous predictors - `rh`: relative humidity treatment (factor with “low” and “high”)
+
+2.  Import mayekar data file (mayekar.csv) and examine it.
+
+3.  Examine the levels of the ‘rh; relative humidity’ variable. Create subset of the low-humidity treatment (rh=low)
+
+```{r}
+df <- read.csv("mayekar.csv")
+str(df)
+head(df)
+
+levels(as.factor(df$rh))
+# Subset data where rh == "low"
+df_low <- subset(df, rh == "low")
+
+# Verify the subset
+head(df_low)
+summary(df_low)
+
+```
+
+1.  Make simple plots for cont. predictors of timepup and weight
+
+    ```{r}
+    # Abundance vs water content
+    plot(colnum ~ timepup, data = df_low,
+         xlab = 'time up', ylab = '')
+
+    # Water content vs presence/absence
+    plot(colnum ~ weight, data = df_low,
+         xlab = 'weight', ylab = '')
+
+    ```
+
+2.  Fit full glm with 3 way-interaction.
+
+```{r}
+# Fit logistic regression
+logit.reg <- glm(colnum  ~ weight * timepup * sex,
+                 data = df_low,
+                 family = binomial(link = "logit"))
+
+# Model summary
+summary(logit.reg)
+```
+
+1.  Check for collinearity
+
+    ```{r}
+    vif(logit.reg)
+    vif(logit.reg, type = "predictor")
+
+
+    ```
+
+2.  Try centering continuous predictors to reduce collinearity
+
+    ```{r}
+    df_low$weight_c <- scale(df_low$weight, scale = FALSE)
+    df_low$timepup_c <- scale(df_low$timepup, scale = FALSE)
+
+    ```
+
+3.  Fit full model with centered predictors
+
+    ```{r}
+
+    # Fit logistic regression
+    logit.reg_scale <- glm(colnum  ~ weight_c * timepup_c * sex,
+                     data = df_low,
+                     family = binomial(link = "logit"))
+
+    # Model summary
+    summary(logit.reg_scale)
+    ```
+
+4.  Determine if interactions are necessary and create a final reduced model.
+
+    The interaction isn't significant and only the timepup is significant. so the final reduced model will include just that.
+
+    ```{r}
+    summary(logit.reg_scale)
+    anova(logit.reg_scale, test = "Chisq")
+
+    # Fit logistic regression
+    logit.reg_final <- glm(colnum  ~ timepup_c,
+                     data = df_low,
+                     family = binomial(link = "logit"))
+
+    # Model summary
+    #summary(logit.reg_final)
+    anova(logit.reg_scale, logit.reg_final, test = "Chisq")
+
+
+    ```
+
+5.  Check assumptions for the final model. In other words, get and plot residuals - focus on deviance residuals plot. You can also use simulated residuals in the DHARMa package.
+
+    ```{r}
+    ED <- resid(logit.reg_final, type = "deviance")
+    mu <- predict(logit.reg_final, type = "response")
+
+    df_low_2 <- cbind(df_low, ED, mu)
+
+    g1 <- ggplot(df_low_2, aes(x = mu, y = ED)) + geom_point() +
+      ggtitle("Deviance residuals vs. Fitted") + theme_bw()
+
+    g2 <- ggplot(df_low_2, aes(x = timepup_c, y = ED)) + geom_point() +
+      ggtitle("Deviance residuals vs. scaled time pup") + theme_bw()
+
+    ggpubr::ggarrange(g1, g2)
+    ```
+
+6.  Get odds ratio with CI and interpret the results.
+
+    -   **Odds ratio \> 1**: predictor increases the odds of presence
+
+    -   **Odds ratio \< 1**: predictor decreases the odds of presence
+
+    -   the timepup increases the odds of presence
+
+    ```{r}
+    exp(logit.reg_final$coefficient[1])
+
+    # Odds ratios with 95% confidence intervals
+    exp(confint.default(logit.reg_final))
+
+
+    ```
+
+7.  Plot the final model fit
+
+    ```{r}
+    # Logistic curve for time pup
+    ggplot(df_low, aes(x = timepup, y = colnum)) +
+      geom_point() +
+      stat_smooth(method = "glm", method.args = list(family=binomial), se = TRUE) +
+      xlab("time pup") +
+      ylab("Probability of presence") +
+      ggtitle("Probability of presence of larve. vs time pup") +
+      theme_classic()
+    ```
+
+## **Post-fire ecology of wiregrass**
+
+Fill et al (2021) studied the effect of duff (leaf litter) on the post-fire ecology of wiregrass (*Aristida beyrichiana*) in a section of pine savanna. They sampled 99 plants in an area of 0.1 km^2^, recorded plant basal area and allocated each plant to one of three treatments: high duff, low duff, low duff with added pine cones. They then burnt the area and five months later, counted the number of culms on each plant. We will model numbers of culms per plant against basal area and duff treatment using each plant as the unit of analysis.
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0247159) and Figure 1 has relevant photos.
+
+**Coding notes:** - `culm`: integer count of culms - `treatment`: categorical factor with three levels (high duff, low duff, low duff + cones) - `basalarea`: continuous predictor
+
+1.  Read and examine the data (fill.csv)
+
+    ```{r}
+    df_2 <- read.csv('fill.csv')
+    str(df_2)
+    ```
+
+2.  Check culm distribution with histogram
+
+    ```{r}
+    hist(df_2$culm)
+    ```
+
+3.  Make a boxplot of culm counts per treatment
+
+    ```{r}
+    # Water content vs presence/absence
+    boxplot(culm ~ treatment, data = df_2,
+            xlab='treatment', ylab = 'culm')
+    ```
+
+4.  Fit poisson glm with basalarea, treatment, and their interaction as predictors
+
+    ```{r}
+    # Ensure treatment is a factor
+    df_2$treatment <- as.factor(df_2$treatment)
+    #glm.p <- glm(culm ~ basalarea + treatment, data = df_2, family = poisson)
+
+    # Summary
+    #summary(glm.p)
+    levels(df_2$treatment)
+    ```

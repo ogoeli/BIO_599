@@ -1,0 +1,215 @@
+---
+title: "Week 11"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(glmmTMB)
+library(DHARMa)
+library(sjPlot)
+```
+
+## **Exercises**
+
+### **1. Fishing**
+
+These data (fish.csv) come from a survey of 250 groups that visited a state park. The dataset includes: - `count`: number of fish caught by the group - `child`: number of children in the group - `persons`: total number of people in the group - `camper`: 1 if the group brought a camper, 0 otherwise
+
+1.  Visualize the distribution of fish counts. What does the distribution look like?
+
+    ```{r}
+    data <- read.csv("fish.csv")
+    data
+    hist(data$count)
+    ```
+
+2.  Fit a Poisson and Negative Binomial model without zero-inflation to test how count is impacted by child, persons, and camper. Compare the models using AIC.
+
+    -   based on the AIC, the Negative Binomial model is a better performing model with lower AIC than a poisson model
+
+    ```{r}
+    nb_tmb <- glmmTMB(count ~ child + persons + camper, data = data, family = nbinom2)
+    summary(nb_tmb)
+
+    possion_tmb <- glmmTMB(count ~ child + persons + camper, data = data, family = poisson)
+    summary(possion_tmb)
+
+    AIC(nb_tmb, possion_tmb)
+    ```
+
+3.  Fit a zero-inflated Poisson model with `child` as the predictor of zero inflation. Interpret the zero-inflation part.
+
+    -   The `ziformula` uses a logistic regression model (binomial dist) to estimate the probability that an observation is from the **zero-inflation process**, which means it predicts whether an observation is an excess zero (i.e., zero from the zero-inflation process) or comes from the regular count-generating process. Setting it to `~1` assumes the zero-inflation is contant for all observations.
+
+    ```{r}
+    Zip1 <- glmmTMB(count ~ child + persons + camper, 
+                    ziformula = ~ child,
+                    data = data, family = poisson)
+    summary(Zip1)
+    ```
+
+4.  Fit a zero-inflated Negative Binomial model with `child` in the zero-inflation part. Is the fit improved?
+
+    -   the fit did improve when its a negative binomial model
+
+    ```{r}
+    Zinb1 <- glmmTMB(count ~ child + persons + camper, 
+                    ziformula = ~ child,
+                    data = data, family = nbinom2)
+    summary(Zinb1)
+
+    AIC(Zip1, Zinb1)
+    ```
+
+5.  Compare AIC for the Poisson, Negative Binomial, and both zero-inflated models. Which model is best?
+
+    -   the zero inflated negative binomial model is the best model with lower AIC score
+
+    ```{r}
+    AIC(Zip1, Zinb1, nb_tmb, possion_tmb)
+    ```
+
+6.  For the best model, interpret the coefficients. What variables increase or decrease the number of fish caught?
+
+    -   **Zero-inflation model:**\
+        - The **probability of false zeros** decreased with increasing child — more child in the group will increase the fish count false zero.
+
+    ```{r}
+    summary(Zinb1)
+    tab_model(Zinb1)
+    ```
+
+7.  What does the zero-inflation part tell you? Are groups with more children more likely to have false zeros?
+
+    -   **groups with more children are more likely to have false zeros** (extra zeros not explained by the count model).
+
+8.  Plot simulated residuals using DHARMa for the best model. Do the residuals indicate problems?
+
+    -   the model fits the model well.
+
+    ```{r}
+    simulationOutput <- simulateResiduals(Zinb1)
+    plot(simulationOutput)
+    ```
+
+9.  Plot residuals against `child`, `camper`, and `persons`. Are there any patterns?
+
+    ```{r}
+    # Simulate residuals
+    res <- simulateResiduals(Zinb1)
+
+    # Plot residuals vs predictors
+    plotResiduals(res, data$child, main = "Residuals vs Child")
+    plotResiduals(res, data$camper, main = "Residuals vs Camper")
+    plotResiduals(res, data$persons, main = "Residuals vs Persons")
+    ```
+
+10. What are your final conclusions about what drives fish count and zero-inflation in this dataset?
+
+    -   I think the number of child in the group counting the fish.
+
+    ### **2. Squirrel behavior**
+
+    For this exercise, you will consider the nuts data set (nuts.csv). These data were originally reported by Flaherty et al (2012). Researchers recorded information about squirrel behavior and forest attributes across various plots in Scotland’s Abernathy Forest. The study focused on the following variables:
+
+    cones = number of cones stripped by red squirrels per plot\
+    sntrees = standardized number of trees per plot\
+    sheight = standardized mean tree height per plot\
+    scover = standardized percentage of canopy cover per plot
+
+    ```{r}
+    data2 <- read.csv("nuts.csv")
+    ```
+
+11. Fit and compare multiple count models:
+
+12. Fit a Poisson model and a negative binomial model relating `cones` to `sntrees`, `sheight`, and `scover`.
+
+    -   the negative binomial is a better model based on lower AIC.
+
+    ```{r}
+    # Poisson model
+    pois_mod <- glmmTMB(cones ~ sntrees + sheight + scover, 
+                        family = poisson, 
+                        data = data2)
+
+    # Negative Binomial model
+    nb_mod <- glmmTMB(cones ~ sntrees + sheight + scover, 
+                      family = nbinom2, 
+                      data = data2)
+
+
+
+    ```
+
+13. Fit zero-inflated versions of each, assuming constant zero-inflation (`ziformula = ~1`).
+
+    ```{r}
+    nb_zi_1 <- glmmTMB(cones ~ sntrees + sheight + scover, 
+                      family = nbinom2,
+                      ziformula = ~1,
+                      data = data2)
+    summary(nb_zi_1)
+    ```
+
+14. Fit a hurdle model using both `truncated_poisson` and `truncated_nbinom2`. Assume a constant zero inflation.
+
+    ```{r}
+    Hurd1 <- glmmTMB(cones ~ sntrees + sheight + scover, 
+                      data = data2,
+                      ziformula = ~1, 
+                     family = "truncated_poisson")
+
+    Hurd2 <- glmmTMB(cones ~ sntrees + sheight + scover, 
+                      data = data2,
+                      ziformula = ~1, 
+                     family = "truncated_nbinom2")
+    ```
+
+15. Compare all models using AIC.
+
+    -   The negative binomial model is the better model with lower AIC followed by the zero-inflated model, assuming constant zero-inflation (`ziformula = ~1`
+
+    ```{r}
+     AIC(pois_mod,nb_mod, nb_zi_1, Hurd1, Hurd2)
+    ```
+
+16. Plot and interpret the two best models. Explain how parameters differ between a zero-inflated model and the model without zero-inflation. What do the zero-inflation model coefficients mean?
+
+    -   the model fit for both model looks good without any deviation. the AIC between both model is slight different with \~1.5. shows that zero inflation doesnt have that much improvement on model performance compared to just negative binomial with any zero inflation.
+
+    ```{r}
+
+    summary(nb_mod)
+    summary(nb_zi_1)
+
+    simulationOutput1 <- simulateResiduals(nb_mod)
+    plot(simulationOutput1)
+
+    simulationOutput2 <- simulateResiduals(nb_zi_1)
+    plot(simulationOutput2)
+    ```
+
+17. Assess model fit using diagnostic plots. Plot residuals against fitted values and each predictor.
+
+    ```{r}
+    # for negative binomial
+    res_nb <- simulateResiduals(nb_mod)
+    plotResiduals(res_nb, data2$sntrees, main = "Residuals vs sntrees")
+    plotResiduals(res_nb, data2$sheight, main = "Residuals vs sheight")
+    plotResiduals(res_nb, data2$scover, main = "Residuals vs scover")
+
+
+
+    #for zero inflated
+    res_nbzi <- simulateResiduals(nb_zi_1)
+
+    plotResiduals(res_nbzi, data2$sntrees, main = "ZI Residuals vs sntrees")
+    plotResiduals(res_nbzi, data2$sheight, main = "ZI Residuals vs sheight")
+    plotResiduals(res_nbzi, data2$scover, main = "ZI Residuals vs scover")
+
+
+    ```
