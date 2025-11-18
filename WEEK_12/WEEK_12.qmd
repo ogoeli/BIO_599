@@ -1,0 +1,267 @@
+---
+title: "WEEK 12"
+author: "Ogonna Eli"
+format: html
+editor: visual
+---
+
+# For both exercises that follow you will use the Owls data set (Owls.csv). These data come from a study of vocal begging behavior in owl nestlings.
+
+Variables you’ll use:
+
+-   NCalls: number of calls in 30 s before a parent’s arrival (response)
+
+-   BroodSize: number of nestlings (use offset(log(BroodSize)))
+
+-   SexParent: sex of visiting parent (factor)
+
+-   FoodTreatment: “Deprived” vs “Satiated”
+
+-   ArrivalTime: time within the night (numeric/continuous)
+
+-   Nest: nest ID (cluster)
+
+-   NestNight: grouping factor for “same nest, same night”, e.g. Nest.Dep vs Nest.Sat
+
+```{r}
+library(tidyverse)
+library(geepack)
+library(sjPlot)
+library(ggeffects)
+library(glmmTMB)
+library(DHARMa)
+library(lmtest)
+
+```
+
+```{r}
+# Load data 
+Owls <- read.csv("Owls.csv")  # Create variables used in the analysis
+Owls$NCalls     <- Owls$SiblingNegotiation 
+Owls$LBroodSize <- log(Owls$BroodSize) 
+Owls$NestNight  <- factor(ifelse(Owls$FoodTreatment == "Deprived",                                  paste(Owls$Nest, ".Dep", sep=""),                                  paste(Owls$Nest, ".Sat", sep="")))
+```
+
+1.  Plot the data. Make a quick visualization of NCalls vs ArrivalTime and a box/violin plot by FoodTreatment. Briefly describe patterns.
+
+    ```{r}
+
+    # Scatter plot: NCalls vs ArrivalTime
+    ggplot(Owls, aes(x = ArrivalTime, y = NCalls)) +
+      geom_point(alpha = 0.6) +
+      geom_smooth(method = "loess", se = FALSE, color = "blue") +
+      labs(title = "Number of Calls vs Arrival Time",
+           x = "Arrival Time (hours)",
+           y = "Number of Calls") +
+      theme_minimal()
+
+    # Box + violin plot: NCalls by FoodTreatment
+    ggplot(Owls, aes(x = FoodTreatment, y = NCalls, fill = FoodTreatment)) +
+      geom_violin(alpha = 0.4) +
+      geom_boxplot(width = 0.1, outlier.color = "red", outlier.shape = 16) +
+      labs(title = "Number of Calls by Food Treatment",
+           x = "Food Treatment",
+           y = "Number of Calls") +
+      theme_minimal() +
+      scale_fill_brewer(palette = "Set2")
+
+    ```
+
+2.  Start with a Poisson GLM. Fit NCalls \~ offset(LBroodSize) + SexParent*FoodTreatment + SexParent*ArrivalTime (family = Poisson). Comment on overdispersion using a dispersion statistic or residual plot.
+
+    ```{r}
+    # Fit Poisson GLM
+    glm_poisson <- glm(NCalls ~ SexParent * FoodTreatment + SexParent * ArrivalTime + offset(LBroodSize),
+                       family = poisson(link = "log"),
+                       data = Owls)
+
+    # Summary of model
+    summary(glm_poisson)
+
+    ```
+
+3.  Refit with quasipoisson. Test whether each interaction is needed and simplify the model. Report the final formula.
+
+    ```{r}
+    # Fit Quasi-Poisson GLM
+    glm_qp <- glm(NCalls ~ SexParent * FoodTreatment + SexParent * ArrivalTime + offset(LBroodSize),
+                  family = quasipoisson(link = "log"),
+                  data = Owls)
+
+    summary(glm_qp)
+
+    ```
+
+4.  Fit GEE with cluster id = Nest and correlation = “exchangeable”. What is the estimated within-nest correlation? Is it plausible?
+
+    ```{r}
+    # Fit GEE model
+    gee_model <- geeglm(NCalls ~ SexParent * FoodTreatment + SexParent * ArrivalTime + offset(LBroodSize),
+                        family = poisson(link = "log"),
+                        data = Owls,
+                        id = Nest,                # cluster by Nest
+                        corstr = "exchangeable")  # assumes constant correlation within clusters
+
+    summary(gee_model)
+
+    ```
+
+5.  Try AR(1). Fit GEE with cluster id = NestNight and corstr = “ar1”. Compare parameter estimates and SEs to the exchangeable model. Which feels more biologically reasonable here?
+
+    ```{r}
+    # Fit GEE with AR(1) correlation
+    gee_ar1 <- geeglm(NCalls ~ SexParent * FoodTreatment + SexParent * ArrivalTime + offset(LBroodSize),
+                      family = poisson(link = "log"),
+                      data = Owls,
+                      id = NestNight,    # cluster = NestNight
+                      corstr = "ar1")    # AR(1) correlation
+
+    tab_model(gee_ar1, gee_model)
+    ```
+
+6.  Compare correlation structures with QIC. Use QIC to compare (a) exchangeable vs (b) AR(1). Which wins? Briefly justify.
+
+    -   The QIC of with AR model is simpler with slightly lower QIC score.
+
+    ```{r}
+    QIC(gee_ar1)
+    QIC(gee_model)
+    ```
+
+7.  Starting from the AR(1) model, test the two interactions (Wald tests via anova.geeglm). Reduce to a main-effects model if justified.
+
+    -   Both interactions can be removed because they are not significant. Therefore the final model contains just food treatment and arrivial time
+
+    ```{r}
+
+    # Starting AR(1) model (already fit)
+    gee_Anova <- geeglm(NCalls ~ SexParent * FoodTreatment + SexParent * ArrivalTime + offset(LBroodSize),
+                      family = poisson(link = "log"),
+                      data = Owls,
+                      id = NestNight,
+                      corstr = "ar1")
+
+    # Test interactions using Wald-type F-tests
+    anova(gee_Anova, test = "Wald")
+
+
+    anova(gee_Anova)
+
+    ##final model with intercation removed
+    gee_final <- geeglm(NCalls ~FoodTreatment + ArrivalTime + offset(LBroodSize),
+                      family = poisson(link = "log"),
+                      data = Owls,
+                      id = NestNight,
+                      corstr = "ar1")
+
+    # Test interactions using Wald-type F-tests
+    anova(gee_final, test = "Wald")
+
+
+    anova(gee_final)
+
+
+    ```
+
+8.  Interpretation. From your final GEE: interpret the effect of FoodTreatment and ArrivalTime on NCalls. Plot the predicted relationships.
+
+    -   For a log link, exponentiate coefficients to get multiplicative effects on the expected mean richness. These are also provided with the tab_model function
+
+    ```{r}
+    exp(coef(gee_final))
+    tab_model(gee_final)
+    plot(ggpredict(gee_final), show_data=TRUE)
+
+    # Correct calculation
+    effect_of_FoodTreatment <- (0.561 - 1) * 100
+    effect_of_FoodTreatment
+
+    effect_of_ArrivalTime <- (0.885 - 1) * 100
+    effect_of_ArrivalTime
+
+    ```
+
+### **2. GLMM (subject-specific)**
+
+1.  fit a random-intercept GLMM with NCalls \~ offset(LBroodSize) + SexParent*FoodTreatment + SexParent*ArrivalTime + (1\|NestNight) (family = Poisson). Use DHARMa to check residuals; comment on fit.
+
+    ```{r}
+    poisfit <- glmmTMB(
+      NCalls ~ offset(LBroodSize) + SexParent*FoodTreatment + SexParent*ArrivalTime + (1|NestNight),
+      family = poisson,
+      data = Owls
+    )
+    summary(poisfit)
+    tab_model(poisfit)
+    set.seed(1)
+    res_pois <- simulateResiduals(poisfit)
+    plot(res_pois)
+    ```
+
+2.  Negative binomial GLMM. Refit with family = nbinom2. Compare AIC and DHARMa plots to the Poisson GLMM.
+
+    ```{r}
+    nbfit1 <- glmmTMB(
+      NCalls ~ offset(LBroodSize) + SexParent*FoodTreatment + SexParent*ArrivalTime + (1|NestNight),
+      family = nbinom2,
+      data = Owls
+    )
+    summary(nbfit1)
+    tab_model(nbfit1)
+    set.seed(1)
+    res_nbfit1 <- simulateResiduals(nbfit1)
+    plot(res_nbfit1)
+
+    AIC(nbfit1, poisfit)
+    ```
+
+3.  Zero-inflation check. Use DHARMa’s zero-inflation test on your NB model. If indicated, add a constant zero-inflation term (ziformula = \~ 1). Does AIC improve?
+
+    -   The AIC got lower so yes, the zero inflation did improve the model.
+
+    ```{r}
+
+    testZeroInflation(res_nbfit1)
+
+
+    # Zero-inflated NB model with constant zero-inflation
+    zinb_model <- glmmTMB(NCalls ~ offset(LBroodSize) + SexParent*FoodTreatment + SexParent*ArrivalTime + (1|NestNight),
+                            ziformula = ~ 1,    # constant zero-inflation
+                          family = nbinom2,
+                          data = Owls)
+
+    summary(zinb_model)
+    AIC(nbfit1, poisfit, zinb_model)
+
+    ```
+
+4.  Model reduction. Use drop1() (LRT/AIC) to remove non-significant interactions and then non-significant main effects (one at a time). State your final model.
+
+    -   The interactions were not significant, so they were removed. the final model contains just the sex parent, food treatment and arrival time without any intercation
+
+    ```{r}
+    drop1(zinb_model,test = "Chi")
+
+    zinb_reduced <- glmmTMB(NCalls ~ offset(LBroodSize) + SexParent + FoodTreatment + ArrivalTime + 
+                               (1 | NestNight),
+                             ziformula = ~1,
+                             family = nbinom2,
+                             data = Owls)
+
+    summary(zinb_reduced)
+
+    ```
+
+5.  Interpretation. Report IRRs and percent changes for FoodTreatment and ArrivalTime from your final GLMM.
+
+    -   the presence of our predictors reduces the response variable
+
+    ```{r}
+    coef_exp <- exp(fixef(zinb_reduced)$cond)
+    coef_exp
+
+    ```
+
+6.  Compare GEE vs GLMM. Do the biological conclusions match? Briefly explain the difference between marginal (GEE) and conditional (GLMM) effects.
+
+    -   Both models indicate **Satiated parents make fewer calls than Deprived parents**, and **later arrival reduces calls**. The direction and overall magnitude of effects are **similar**, so **biological conclusions are consistent**. Minor differences in effect size are expected due to model assumptions.
